@@ -972,11 +972,11 @@ http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html"
         (t (narrow-to-defun))))
 
 (defun gh/insert-key (key)
-  "Prompt to type a key sequence. Insert its description as <kbd> element.
+  "Prompt to type a key sequence. Insert its description as HTML <kbd> element.
 
-From
-http://emacs.stackexchange.com/questions/2206/i-want-to-have-the-kbd-tags-for-my-blog-written-in-org-mode
-but simplified because I only use org-mode to take notes that
+Credit: <http://emacs.stackexchange.com/questions/2206/i-want-to-have-the-kbd-tags-for-my-blog-written-in-org-mode>
+
+But simplified because I only use org-mode to take notes that
 might later end up in markdown-mode blog post."
   (interactive "kType key sequence: ")
   (let ((tag "<kbd>%s</kbd>"))
@@ -986,7 +986,6 @@ might later end up in markdown-mode blog post."
       (insert (format tag ""))
       (forward-char -6))))
 
-;; http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
 (defun gh/smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
@@ -996,7 +995,9 @@ Effectively toggle between the first non-whitespace character and
 the beginning of the line.
 
 If ARG is not nil or 1, move forward ARG - 1 lines first.  If
-point reaches the beginning or end of the buffer, stop there."
+point reaches the beginning or end of the buffer, stop there.
+
+Credit: <http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/>"
   (interactive "^p")
   (setq arg (or arg 1))
 
@@ -1012,11 +1013,12 @@ point reaches the beginning or end of the buffer, stop there."
 
 (bind-key "C-a" #'gh/smarter-move-beginning-of-line)
 
-;; http://irreal.org/blog/?p=374
 (defun gh/comment-box (b e)
   "Draw a box comment around the region but arrange for the region
 to extend to at least the fill column. Place the point after the
-comment box."
+comment box.
+
+Credit: <http://irreal.org/blog/?p=374>"
   (interactive "r")
   (let ((e (copy-marker e t)))
     (goto-char b)
@@ -1040,10 +1042,10 @@ comment box."
            ("C-c t q" . toggle-debug-on-quit)
            ("C-c t w" . toggle-show-trailing-whitespace))
 
-
-;; https://gist.github.com/johnmastro/508fb22a2b4e1ce754e0
 (defun gh/isearch-delete-something ()
-  "Delete non-matching text or the last character."
+  "Delete non-matching text or the last character.
+
+Credit: <https://gist.github.com/johnmastro/508fb22a2b4e1ce754e0>"
   ;; Mostly copied from `isearch-del-char' and Drew's answer on the page above
   (interactive)
   (if (= 0 (length isearch-string))
@@ -1063,9 +1065,10 @@ comment box."
           #'gh/isearch-delete-something
           isearch-mode-map)
 
-;; http://whattheemacsd.com/buffer-defuns.el-02.html
 (defun gh/rotate-windows ()
-  "Rotate your windows."
+  "Rotate your windows.
+
+Credit: <http://whattheemacsd.com/buffer-defuns.el-02.html>"
   (interactive)
   (let ((num-windows (count-windows))
         (i 1))
