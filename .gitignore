@@ -1,0 +1,15 @@
+*.elc
+*.eld
+*.cache
+
+auto-save-list/
+elpa/
+eshell/
+url/
+
+bookmarks
+custom.el
+ido.last
+recentf
+smex-items
+tramp
