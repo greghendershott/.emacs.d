@@ -491,18 +491,15 @@
 
 (use-package projectile
   :ensure t
-  :init (projectile-global-mode)
   :bind (:map projectile-command-map
               ("t" . gh/neotree-project-root)
               ("T" . projectile-toggle-between-implementation-and-test))
+  :init (projectile-global-mode)
   :config
   ;; Remove dead projects when Emacs is idle
   (run-with-idle-timer 10 nil #'projectile-cleanup-known-projects)
 
-  (setq projectile-find-dir-includes-top-level t
-        projectile-mode-line '((:propertize
-                                (:eval (projectile-project-name))
-                                face italic)))
+  (setq projectile-find-dir-includes-top-level t)
 
   (defun gh/neotree-project-root (&optional directory)
     "Open a NeoTree browser for a project DIRECTORY."
@@ -512,8 +509,7 @@
                (neo-global--window-exists-p))
           (neotree-hide)
         (neotree-find (projectile-project-root)))))
-  ;:diminish projectile-mode
-  )
+  :diminish projectile-mode)
 
 (use-package python
   :defer t
@@ -706,10 +702,8 @@
                 mode-line-remote
                 mode-line-frame-identification
                 mode-line-buffer-identification
-                " " projectile-mode-line
-                "[" (vc-mode gh/vc-mode-line) "]"
+                (vc-mode gh/vc-mode-line)
                 " " mode-line-position
-                (multiple-cursors-mode mc/mode-line)
                 " " mode-line-misc-info
                 mode-line-modes
                 mode-line-end-spaces))
@@ -720,13 +714,14 @@
 (setq-default mode-line-position
               '("("
                 (-3 "%p")
-                (size-indication-mode ("/" (-4 "%I")))
+                (size-indication-mode ("/ " (-4 "%I")))
                 " "
                 (line-number-mode ("%l" (column-number-mode ":%c")))
                 ")"))
 
 (defconst gh/vc-mode-line
-  '((:propertize
+  '(" on "
+    (:propertize
      ;; Strip the prefix (e.g. "Git-") leaving just the branch name.
      (:eval (let ((backend (symbol-name (vc-backend (buffer-file-name)))))
               (substring vc-mode (+ (length backend) 2))))
