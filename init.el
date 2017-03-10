@@ -501,6 +501,9 @@
 
   (setq projectile-find-dir-includes-top-level t)
 
+  ;; Ignore Racket bytecode dirs
+  (add-to-list 'projectile-globally-ignored-directories "compiled")
+
   (defun gh/neotree-project-root (&optional directory)
     "Open a NeoTree browser for a project DIRECTORY."
     (interactive)
