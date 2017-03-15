@@ -571,8 +571,7 @@
   :ensure t
   :bind (("M-x"   . smex)
          ("M-X"   . smex-major-mode-commands)
-         ("C-c x" . smex)
-         ("C-c X" . smex-major-mode-commands)))
+         ("C-x m" . smex)))
 
 (use-package solarized
   :ensure solarized-theme
