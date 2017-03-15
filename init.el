@@ -836,6 +836,8 @@
 
 ;; Splitter drag
 
+(require 'windmove)
+
 (defun gh/find-other-window (dir)
   (let* ((windmove-wrap-around nil)
          (win (windmove-find-other-window dir)))
