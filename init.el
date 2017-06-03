@@ -280,11 +280,15 @@
 (use-package haskell-mode
  :ensure t
  :defer t
- :init (add-hook 'haskell-mode-hook #'turn-on-haskell-indentation)
- :config (bind-keys :map haskell-mode-map
-                    ("C-M-x"   . inferior-haskell-send-decl)
-                    ("C-c C-k" . inferior-haskell-load-file)
-                    ("<f5>"    . inferior-haskell-load-file)))
+ :init
+ (add-hook 'haskell-mode-hook #'turn-on-haskell-indentation)
+ (add-hook 'haskell-mode-hook #'interactive-haskell-mode)
+ (add-hook 'haskell-mode-hook #'haskell-doc-mode)
+ :config
+ (bind-keys :map haskell-mode-map
+            ("C-M-x"   . inferior-haskell-send-decl)
+            ("C-c C-k" . inferior-haskell-load-file)
+            ("<f5>"    . inferior-haskell-load-file)))
 
 (use-package highlight-parentheses
   :ensure t
