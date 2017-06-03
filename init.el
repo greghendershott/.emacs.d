@@ -614,6 +614,10 @@
         solarized-height-plus-3 1.0
         solarized-height-plus-4 1.0))
 
+(use-package tramp
+  :config
+  (setq tramp-default-method "ssh"))
+
 (use-package uniquify
   :config (setq uniquify-buffer-name-style 'forward))
 
