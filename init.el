@@ -543,11 +543,9 @@
                             (((background light)) (:foreground "SeaGreen4"))))))
   :config
   (cond (macosx-p
-         (setq racket-racket-program "/Applications/Racket_v6.7/bin/racket"
-               racket-raco-program   "/Applications/Racket_v6.7/bin/raco"))
+         (setq racket-program "/Applications/Racket_v6.7/bin/racket"))
         (linux-p
-         (setq racket-racket-program "/usr/racket/bin/racket"
-               racket-raco-program   "/usr/racket/bin/raco")))
+         (setq racket-program "/usr/racket/bin/racket")))
   (setq racket-error-context 'high)
   (diminish 'hs-minor-mode)
   (unless terminal-frame
