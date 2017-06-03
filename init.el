@@ -78,6 +78,7 @@
 (setq-default major-mode 'text-mode)
 (setq-default indent-tabs-mode nil)  ;spaces instead of TAB chars
 (setq-default tab-width 4)
+(add-hook 'emacs-lisp-mode-hook (lambda () (setq tab-width 8)))
 (setq echo-keystrokes 0.1)           ;show keys immediately
 (setq scroll-down-aggressively 0.1)
 (setq scroll-up-aggressively 0.1)
