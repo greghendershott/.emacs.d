@@ -776,7 +776,7 @@
     (gh/set-font-height (cond ((>= h 2160) 160) ;LG not HiDPI
                               ((>= h 1080)  80) ;LG HiDPI
                               (t           120)))))
-(bind-key "C-c w H" #'gh/set-font-height-for-current-monitor)
+(bind-key "C-c w H" #'gh/set-font-height)
 
 (defun gh/other-monitor-workarea ()
   (let ((xs (display-monitor-attributes-list)))
@@ -862,7 +862,9 @@
   (let* ((windmove-wrap-around nil)
          (win (windmove-find-other-window dir)))
     (and win
-         (not (minibufferp (window-buffer win)))
+         (not (or (minibufferp (window-buffer win))
+                  (window-preserved-size win
+                                         (member dir '(left right)))))
          win)))
 
 (defun gh/move-splitter (dir arg)
