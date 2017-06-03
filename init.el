@@ -320,41 +320,40 @@
 (use-package ido
   :ensure t
   :init
-  (progn
-    (setq ido-enable-prefix nil
-          ido-enable-flex-matching t
-          ido-case-fold nil
-          ido-auto-merge-work-directories-length -1
-          ido-create-new-buffer 'always
-          ido-use-filename-at-point nil
-          ido-max-prospects 10
-          ido-use-virtual-buffers nil)
-    (ido-mode t)
+  (setq ido-enable-prefix nil
+        ido-enable-flex-matching t
+        ido-case-fold nil
+        ido-auto-merge-work-directories-length -1
+        ido-create-new-buffer 'always
+        ido-use-filename-at-point nil
+        ido-max-prospects 10
+        ido-use-virtual-buffers nil)
+  (ido-mode 1)
 
-    (use-package flx-ido ;for better flex matching between words
-      :ensure t
-      :init (progn
-              (setq ido-use-faces nil) ;disable ido faces to see flx highlights.
-              (flx-ido-mode 1)))
+  (use-package flx-ido ;for better flex matching between words
+    :ensure t
+    :init
+    (setq ido-use-faces nil) ;disable ido faces to see flx highlights.
+    (flx-ido-mode 1))
 
-    (use-package ido-vertical-mode ;flx-ido looks better vertically
-      :ensure t
-      :init (progn
-              (add-hook 'ido-setup-hook
-                        (lambda ()
-                          (bind-keys :map ido-completion-map
-                                     ("C-n"    . ido-next-match)
-                                     ("<down>" . ido-next-match)
-                                     ("C-p"    . ido-prev-match)
-                                     ("<up>"   . ido-prev-match))))
-              (ido-vertical-mode)))
+  (use-package ido-vertical-mode ;flx-ido looks better vertically
+    :ensure t
+    :init
+    (add-hook 'ido-setup-hook
+              (lambda ()
+                (bind-keys :map ido-completion-map
+                           ("C-n"    . ido-next-match)
+                           ("<down>" . ido-next-match)
+                           ("C-p"    . ido-prev-match)
+                           ("<up>"   . ido-prev-match))))
+    (ido-vertical-mode 1))
 
-    (use-package idomenu
-      :ensure t
-      :init (progn
-              (autoload 'idomenu "idomenu" nil t) ;do I really need this?
-              (add-hook 'emacs-lisp-mode #'gh/emacs-lisp-mode-imenu-hook))
-      :bind (("C-c i"   . idomenu)))))
+  (use-package idomenu
+    :ensure t
+    :bind (("C-c i"   . idomenu))
+    :init
+    (autoload 'idomenu "idomenu" nil t) ;do I really need this?
+    (add-hook 'emacs-lisp-mode #'gh/emacs-lisp-mode-imenu-hook)))
 
 (use-package interaction-log
   :defer t
