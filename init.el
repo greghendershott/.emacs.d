@@ -158,7 +158,9 @@
   ;; Use home-row letters instead of the default numbers
   :config
   (require 'avy)
-  (setq aw-keys '(?j ?k ?l ?\; ?u ?i ?o ?p))
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (setq aw-dispatch-always t)
+  (setq aw-background t)
   (put 'aw-leading-char-face 'face-alias 'avy-lead-face)
   (put 'aw-background-face 'face-alias 'avy-background-face))
 
