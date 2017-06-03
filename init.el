@@ -109,7 +109,8 @@
             (t #'browse-url-firefox)))
 
 ;; Emacs 25 enables global-eldoc-mode by default. No.
-(global-eldoc-mode -1)
+(when (fboundp 'global-eldoc-mode)
+  (global-eldoc-mode -1))
 
 (require 'rx)
 (defun gh/set-page-delimiter ()
