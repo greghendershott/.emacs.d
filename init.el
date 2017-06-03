@@ -879,7 +879,7 @@
     (funcall (if (gh/find-other-window dir) enlarge shrink)
              arg)))
 
-(defhydra gh/hydra-splitter-drag ()
+(defhydra gh/splitter-drag-hydra ()
   ("h" (gh/move-splitter 'left  1) "left")
   ("j" (gh/move-splitter 'down  1) "down")
   ("k" (gh/move-splitter 'up    1) "up")
@@ -887,6 +887,7 @@
   ("o" gh/next-window "next window") ;like C-x o
   ("n" gh/next-window "next window")
   ("p" gh/prev-window "prev window")
+  ("=" balance-windows "balance")
   ("RET" nil))
 
 ;; Themes
@@ -919,7 +920,7 @@ _S_: Light    _M_: Light
            ("C-c w k"   . delete-window)
            ("C-c w /"   . split-window-right)
            ("C-c w -"   . split-window-below)
-           ("C-c w s"   . gh/hydra-splitter-drag/body)
+           ("C-c w s"   . gh/splitter-drag-hydra/body)
            ("C-c w m"   . delete-other-windows)
            ("C-c w d"   . gh/toggle-current-window-dedication)
            ("C-c w t"   . gh/themes-hydra/body)
