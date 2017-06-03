@@ -552,6 +552,10 @@
     (bind-keys :map racket-mode-map
                ("M-]" . racket-align)
                ("M-}" . racket-unalign))))
+(use-package scribble-mode
+  :ensure t
+  :defer t)
+
 
 (use-package rainbow-delimiters
   :ensure t)
