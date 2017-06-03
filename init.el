@@ -727,8 +727,8 @@
                 mode-line-buffer-identification
                 (vc-mode gh/vc-mode-line)
                 " " mode-line-position
-                " " mode-line-misc-info
-                mode-line-modes
+                " " mode-line-modes
+                " " (:propertize (:eval mode-line-misc-info) face italic)
                 mode-line-end-spaces))
 
 (setq-default mode-line-buffer-identification
@@ -755,8 +755,8 @@
 (setq display-time-load-average-threshold nil)
 ;; (setq-default battery-mode-line-format " %b%p%%/%t")
 ;; (display-battery-mode 1)
-;; (setq display-time-format "%-d %b %-l:%M") ;see `format-time-string'
-;; (display-time)
+(setq display-time-format "%b %-d %-l:%M") ;see `format-time-string'
+(display-time)
 
 ;; multi monitor
 
