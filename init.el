@@ -21,6 +21,10 @@
 
 (setq text-scale-mode-step 1.1)         ;finer inc/dec than default 1.2
 
+(setq-default cursor-type 'box)
+(setq-default cursor-in-non-selected-windows '(hbar . 3))
+(setq blink-cursor-alist '((box . bar)))
+(set-face-attribute 'cursor nil :background "orange")
 (blink-cursor-mode 1)
 (when (boundp 'blink-cursor-blinks)
   (setq blink-cursor-blinks 0)) ;forever
