@@ -594,6 +594,7 @@
   :defer t
   :init
   (defun gh/solarized-theme-hook ()
+    (set-face-attribute 'cursor nil :background "orange")
     (set-face-attribute 'font-lock-constant-face nil :weight 'normal)
     (set-face-attribute 'font-lock-function-name-face nil :weight 'bold)
     (set-face-attribute 'which-key-key-face nil :foreground
