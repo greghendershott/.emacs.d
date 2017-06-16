@@ -543,7 +543,7 @@
          (setq racket-program "/Applications/Racket_v6.7/bin/racket"))
         (linux-p
          (setq racket-program "/usr/racket/bin/racket")))
-  (setq racket-error-context 'high)
+  (setq racket-error-context 'medium)
   (diminish 'hs-minor-mode)
   (unless terminal-frame
     (bind-keys :map racket-mode-map
