@@ -495,9 +495,6 @@
 (use-package paren-face
   :ensure t
   :config
-  (custom-set-faces
-   '(parenthesis ((((background dark)) (:foreground "HoneyDew4"))
-                  (((background light)) (:foreground "grey70")))))
   (setq paren-face-regexp (rx (any "()[]{}")))
   (add-to-list 'paren-face-modes 'racket-mode)
   (add-to-list 'paren-face-modes 'racket-repl-mode)
