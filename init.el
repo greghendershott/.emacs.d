@@ -443,12 +443,11 @@
         neo-dont-be-alone t
         neo-persist-show nil
         neo-show-hidden-files t
-        neo-auto-indent-point t)
+        neo-auto-indent-point nil)
   (apply
    #'custom-set-faces
-   `((neo-file-link-face ((((background dark)) (:foreground "#839496"))
-                          (((background light)) (:foreground "#555"))))
-     (neo-dir-link-face ((t (:foreground "DodgerBlue1")))))))
+   `((neo-file-link-face ((t (:inherit default))))
+     (neo-dir-link-face ((t (:inherit dired-directory)))))))
 
 (use-package nxml-mode
   :init (apply
