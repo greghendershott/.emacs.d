@@ -540,7 +540,7 @@
                             (((background light)) (:foreground "SeaGreen4"))))))
   :config
   (cond (macosx-p
-         (setq racket-program "/Applications/Racket_v6.7/bin/racket"))
+         (setq racket-program "/Applications/Racket_v6.10/bin/racket"))
         (linux-p
          (setq racket-program "/usr/racket/bin/racket")))
   (setq racket-error-context 'medium)
