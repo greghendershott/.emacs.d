@@ -18,8 +18,10 @@
         paredit-forward-barf-sexp
         paredit-forward-delete
         paredit-forward-down
+        paredit-forward-kill-word
         paredit-forward-slurp-sexp
         paredit-forward-up
+        paredit-kill
         paredit-meta-doublequote
         paredit-newline
         paredit-open-curly
@@ -27,6 +29,7 @@
         paredit-wrap-round
         paredit-wrap-square
         racket--paredit-open-square
+        racket-cycle-paren-shapes
         ))
 
 (setq mc/cmds-to-run-once
