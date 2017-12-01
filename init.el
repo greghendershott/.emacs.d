@@ -594,7 +594,9 @@
     (set-face-attribute 'font-lock-constant-face nil :weight 'normal)
     (set-face-attribute 'font-lock-function-name-face nil :weight 'bold)
     (set-face-attribute 'which-key-key-face nil :foreground
-                        (face-attribute 'error :foreground)))
+                        (face-attribute 'error :foreground))
+    (set-face-attribute 'parenthesis nil :foreground
+                        (face-attribute 'shadow :foreground)))
   (gh/add-theme-hook 'solarized-dark  #'gh/solarized-theme-hook)
   (gh/add-theme-hook 'solarized-light #'gh/solarized-theme-hook)
   :config
