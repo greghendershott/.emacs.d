@@ -910,20 +910,26 @@ _S_: Light    _M_: Light
 
 ;;; Various window and buffer key bindings
 
-(bind-keys ("C-x o"     . gh/next-window)
-           ("C-x p"     . gh/prev-window)
-           ("C-x 1"     . delete-other-windows-vertically)
+(defun unlearn-C-x-o () (interactive) (user-error "Use C-. instead"))
+(defun unlearn-C-x-p () (interactive) (user-error "Use C-, instead"))
 
-           ("C-c w ="   . balance-windows)
-           ("C-c w k"   . delete-window)
-           ("C-c w /"   . split-window-right)
-           ("C-c w -"   . split-window-below)
-           ("C-c w s"   . gh/splitter-drag-hydra/body)
-           ("C-c w m"   . delete-other-windows)
-           ("C-c w d"   . gh/toggle-current-window-dedication)
-           ("C-c w t"   . gh/themes-hydra/body)
+(bind-keys ("C-x o"   . unlearn-C-x-o)
+           ("C-x p"   . unlearn-C-x-p)
+           ("C-."     . gh/next-window)
+           ("C-,"     . gh/prev-window)
 
-           ("C-c b B"   . ibuffer))
+           ("C-x 1"   . delete-other-windows-vertically)
+
+           ("C-c w =" . balance-windows)
+           ("C-c w k" . delete-window)
+           ("C-c w /" . split-window-right)
+           ("C-c w -" . split-window-below)
+           ("C-c w s" . gh/splitter-drag-hydra/body)
+           ("C-c w m" . delete-other-windows)
+           ("C-c w d" . gh/toggle-current-window-dedication)
+           ("C-c w t" . gh/themes-hydra/body)
+
+           ("C-c b B" . ibuffer))
 
 ;; "Fix" linum display problem on OS X
 (setq linum-format "  %d ")
