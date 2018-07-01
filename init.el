@@ -222,6 +222,9 @@
                      ;; C-u C-u C-u TAB will expand 64
                      ("TAB" . dired-subtree-cycle)))
 
+(use-package diminish
+  :ensure t)
+
 (use-package elisp-slime-nav
   :ensure t
   :init (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
