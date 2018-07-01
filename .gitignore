@@ -6,6 +6,7 @@ auto-save-list/
 elpa/
 eshell/
 url/
+magithub/
 
 bookmarks
 custom.el
