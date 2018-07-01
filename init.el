@@ -931,6 +931,8 @@ _S_: Light    _M_: Light
 
            ("C-c b B" . ibuffer))
 
+(bind-keys :map org-mode-map ("C-," . gh/prev-window))
+
 ;; "Fix" linum display problem on OS X
 (setq linum-format "  %d ")
 
