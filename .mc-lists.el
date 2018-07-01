@@ -26,6 +26,7 @@
         paredit-newline
         paredit-open-curly
         paredit-open-round
+        paredit-raise-sexp
         paredit-wrap-round
         paredit-wrap-square
         racket--paredit-open-square
@@ -35,6 +36,7 @@
 (setq mc/cmds-to-run-once
       '(
         abbrev-prefix-mark
+        beginning-of-buffer
         cider-find-and-clear-repl-output
         cljr-slash
         smex
