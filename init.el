@@ -581,13 +581,16 @@
   :ensure t)
 
 (use-package rust-mode
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package cargo
   :ensure t
+  :defer t
   :config
   (add-hook 'rust-mode-hook #'cargo-minor-mode))
 (use-package racer
   :ensure t
+  :defer t
   :config
   (setq racer-cmd           "~/.cargo/bin/racer"
         racer-rust-src-path "~/src/rust/rust/src")
@@ -596,6 +599,7 @@
   (add-hook 'racer-mode-hook #'company-mode))
 (use-package flycheck-rust
   :ensure t
+  :defer t
   :config
   (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
