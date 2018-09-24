@@ -301,6 +301,12 @@
               (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
                 (ggtags-mode 1)))))
 
+(use-package greg-theme
+  :load-path "~/src/elisp/greg-theme/"
+  :defer t
+  :init
+  (add-to-list 'custom-theme-load-path "~/src/elisp/greg-theme/"))
+
 (use-package haskell-mode
  :ensure t
  :defer t
@@ -926,20 +932,21 @@
 
 ;; Themes
 
-(defhydra gh/themes-hydra (:hint nil :color pink)
+(defhydra gh/themes-hydra (:hint nil)
   "
 Themes
 
 ^Solarized^   ^Material^   ^Other^
 ----------------------------------------------------
 _s_: Dark     _m_: Dark    _z_: Zenburn  _DEL_: none
-_S_: Light    _M_: Light
+_S_: Light    _M_: Light   _g_: Greg
 "
   ("s" (load-theme 'solarized-dark  t))
   ("S" (load-theme 'solarized-light t))
   ("m" (load-theme 'material        t))
   ("M" (load-theme 'material-light  t))
   ("z" (load-theme 'zenburn         t))
+  ("g" (load-theme 'greg            t))
   ("DEL" (gh/disable-all-themes))
   ("RET" nil "done" :color blue))
 
