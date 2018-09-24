@@ -321,6 +321,12 @@
             ("C-c C-k" . inferior-haskell-load-file)
             ("<f5>"    . inferior-haskell-load-file)))
 
+(use-package helpful
+  :ensure t
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)))
+
 (use-package highlight-parentheses
   :ensure t
   :defer t)
