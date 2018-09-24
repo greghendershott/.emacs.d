@@ -319,7 +319,7 @@
   :defer t)
 
 (use-package hl-line-mode
-  :disabled
+  :disabled t
   :init
   (setq hl-line-sticky-flag nil)
   (add-hook 'prog-mode-hook #'hl-line-mode))
@@ -490,6 +490,7 @@
            (nxml-attribute-local-name ((t (:foreground "wheat3" :slant italic))))
            (nxml-delimiter            ((t (:foreground "wheat3")))))))
 
+(require 'org)
 (use-package org
   :mode (("\\.org\\'" . org-mode))
   :defer t
