@@ -517,6 +517,12 @@
   (setq-default org-catch-invisible-edits 'smart)
   (bind-key "C-c k" #'gh/insert-key org-mode-map))
 
+(use-package org-present
+  :load-path "~/src/elisp/org-present")
+
+(use-package package-lint
+  :ensure t)
+
 (use-package paredit
   :ensure t
   :config
