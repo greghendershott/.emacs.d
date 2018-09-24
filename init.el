@@ -212,6 +212,9 @@
 (use-package dash-functional
   :ensure t)
 
+(use-package deadgrep
+  :ensure t)
+
 (use-package dired
   :init (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   :config (bind-keys :map dired-mode-map
@@ -522,7 +525,9 @@
   :ensure t
   :bind (:map projectile-command-map
               ("t" . gh/neotree-project-root)
-              ("T" . projectile-toggle-between-implementation-and-test))
+              ("T" . projectile-toggle-between-implementation-and-test)
+              ("s g" . deadgrep)
+              ("s G" . projectile-grep))
   :init (projectile-global-mode)
   :config
   ;; Remove dead projects when Emacs is idle
