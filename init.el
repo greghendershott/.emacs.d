@@ -32,6 +32,8 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
+;; I seem to be hitting this accidentally and I never use fill-prefix.
+(global-unset-key (kbd "C-x ."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Theme hooks
