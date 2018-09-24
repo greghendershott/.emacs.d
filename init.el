@@ -199,7 +199,14 @@
 (use-package company
   :ensure t
   :defer t
-  :diminish company-mode)
+  :diminish company-mode
+  ;; The following for testing racket-mode/issues/318
+  :config
+  (setq company-idle-delay 0.1
+        company-minimum-prefix-length 2
+        company-tooltip-align-annotations t
+        company-show-numbers t
+        company-require-match nil))
 
 (use-package copyright
   ;; built-in
