@@ -196,14 +196,6 @@
   :defer t
   :config (put-clojure-indent 'match 1))
 
-(use-package clj-refactor
-  :ensure t
-  :init (add-hook 'clojure-mode-hook
-                  (lambda ()
-                    (clj-refactor-mode 1)
-                    ;;(cljr-add-keybindings-with-prefix "C-c C-m")
-                    )))
-
 (use-package company
   :ensure t
   :defer t
