@@ -572,15 +572,16 @@
   :init
   (apply
    #'custom-set-faces
-   `((racket-keyword-argument-face ((t (:foreground "IndianRed3"))))
-     (racket-selfeval-face ((((background dark)) (:foreground "SeaGreen4"))
-                            (((background light)) (:foreground "SeaGreen4"))))))
+   `((racket-keyword-argument-face ((t (:foreground "IndianRed3"))))))
   :config
   (cond (macosx-p
-         (setq racket-program "/Applications/Racket_v6.10/bin/racket"))
+         (setq racket-program
+               "/Applications/Racket_v6.10/bin/racket"
+               ;;"/Applications/Racket_v7.0/bin/racket"
+               ))
         (linux-p
          (setq racket-program "/usr/racket/bin/racket")))
-  (setq racket-error-context 'medium)
+  (setq racket-error-context 'medium)  ; 'high
   (diminish 'hs-minor-mode)
   (unless terminal-frame
     (bind-keys :map racket-mode-map
