@@ -10,14 +10,17 @@
 
 ;; Things to do early in startup, e.g. to avoid momentary display
 
+(add-to-list 'initial-frame-alist
+             (if macosx-p
+                 '(fullscreen . fullboth)
+               '(fullscreen . maximized)))
+
 (setq inhibit-startup-message t)
 (when (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (when (boundp 'tool-bar-mode) (tool-bar-mode -1))
 (cond (macosx-p (setq ns-command-modifier 'meta
                       ns-auto-hide-menu-bar t))
       ((boundp 'menu-bar-mode) (menu-bar-mode -1)))
-
-(setq initial-frame-alist '((fullscreen . fullboth)))
 
 (setq text-scale-mode-step 1.1)         ;finer inc/dec than default 1.2
 
@@ -34,6 +37,16 @@
 
 ;; I seem to be hitting this accidentally and I never use fill-prefix.
 (global-unset-key (kbd "C-x ."))
+
+(when mswindows-p
+  (setq w32-pass-lwindow-to-system nil)
+  (setq w32-lwindow-modifier 'meta)
+  (w32-register-hot-key [M-])
+  (w32-unregister-hot-key [M-tab])
+  ;; https://www.reddit.com/r/bashonubuntuonwindows/comments/5iyp0y/using_wsl_as_mx_shell_in_windows_emacs/
+  ;; Alas, for some reason in the *shell* buffer C:\Windows\System32\wsl.exe
+  ;; doesn't exist.
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Theme hooks
@@ -424,10 +437,11 @@
                  (display-buffer-reuse-window)
                  (reusable-frames . visible))))
 
-(use-package magithub
-  :after magit
-  :ensure t
-  :config (magithub-feature-autoinject t))
+(unless mswindows-p
+  (use-package magithub
+    :after magit
+    :ensure t
+    :config (magithub-feature-autoinject t)))
 
 (use-package markdown-mode
   :ensure t
@@ -517,8 +531,8 @@
   (setq-default org-catch-invisible-edits 'smart)
   (bind-key "C-c k" #'gh/insert-key org-mode-map))
 
-(use-package org-present
-  :load-path "~/src/elisp/org-present")
+;; (use-package org-present
+;;   :load-path "~/src/elisp/org-present")
 
 (use-package package-lint
   :ensure t)
@@ -533,8 +547,10 @@
                racket-repl-mode-hook))
     (add-hook m #'paredit-mode))
   (bind-keys :map paredit-mode-map
-             ("{" . paredit-open-curly)
-             ("}" . paredit-close-curly))
+             ("{"   . paredit-open-curly)
+             ("}"   . paredit-close-curly)
+             ("C-)" . paredit-forward-slurp-sexp)
+             ("C-(" . paredit-backward-slurp-sexp))
   (unless terminal-frame
     (bind-keys :map paredit-mode-map
                ("M-[" . paredit-wrap-square)
@@ -556,6 +572,7 @@
               ("s g" . deadgrep)
               ("s G" . projectile-grep))
   :init (projectile-global-mode)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   :config
   ;; Remove dead projects when Emacs is idle
   (run-with-idle-timer 10 nil #'projectile-cleanup-known-projects)
@@ -564,6 +581,10 @@
 
   ;; Ignore Racket bytecode dirs
   (add-to-list 'projectile-globally-ignored-directories "compiled")
+
+  (projectile-register-project-type 'racket '("info.rkt")
+                                    :compile "raco setup %s"
+                                    :test "raco test %s")
 
   (defun gh/neotree-project-root (&optional directory)
     "Open a NeoTree browser for a project DIRECTORY."
@@ -593,7 +614,9 @@
                ;;"/Applications/Racket_v7.0/bin/racket"
                ))
         (linux-p
-         (setq racket-program "/usr/racket/bin/racket")))
+         (setq racket-program "/usr/racket/bin/racket"))
+        (mswindows-p
+         (setq racket-program "C:\\Program Files\\Racket-7.1\\Racket.exe")))
   (setq racket-error-context 'medium)  ; 'high
   (diminish 'hs-minor-mode)
   (unless terminal-frame
