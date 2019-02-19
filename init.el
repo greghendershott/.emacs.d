@@ -33,7 +33,7 @@
   (setq blink-cursor-blinks 0)) ;forever
 
 (setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
+(load custom-file t)
 
 ;; I seem to be hitting this accidentally and I never use fill-prefix.
 (global-unset-key (kbd "C-x ."))
@@ -43,10 +43,16 @@
   (setq w32-lwindow-modifier 'meta)
   (w32-register-hot-key [M-])
   (w32-unregister-hot-key [M-tab])
-  ;; https://www.reddit.com/r/bashonubuntuonwindows/comments/5iyp0y/using_wsl_as_mx_shell_in_windows_emacs/
-  ;; Alas, for some reason in the *shell* buffer C:\Windows\System32\wsl.exe
-  ;; doesn't exist.
-  )
+  (setenv "PATH"
+          (concat "C:\\msys64\\mingw64\\bin;C:\\msys64\\usr\\local\\bin;C:\\msys64\\usr\\bin;"
+                  (getenv "PATH")))
+  (setq exec-path
+        (append (list "c:/msys64/mingw64/bin"
+                      "c:/msys64/usr/local/bin"
+                      "c:/msys64/usr/bin")
+                exec-path))
+  (setenv "PS1" "\\[\\e[33m\\]\\w\\[\\e[0m\\]\\n$ ")
+  (setq shell-file-name (executable-find "bash.exe")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Theme hooks
@@ -616,7 +622,7 @@
         (linux-p
          (setq racket-program "/usr/racket/bin/racket"))
         (mswindows-p
-         (setq racket-program "C:\\Program Files\\Racket-7.1\\Racket.exe")))
+         (setq racket-program "C:\\Program Files\\Racket-7.2\\Racket.exe")))
   (setq racket-error-context 'medium)  ; 'high
   (diminish 'hs-minor-mode)
   (unless terminal-frame
