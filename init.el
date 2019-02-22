@@ -7,6 +7,7 @@
 (defvar mswindows-p (string-match "windows" (symbol-name system-type)))
 (defvar macosx-p (string-match "darwin" (symbol-name system-type)))
 (defvar linux-p (and (not mswindows-p) (not macosx-p)))
+(defvar wsl-p (and linux-p (getenv "WSL") t))
 
 ;; Things to do early in startup, e.g. to avoid momentary display
 
@@ -42,17 +43,7 @@
   (setq w32-pass-lwindow-to-system nil)
   (setq w32-lwindow-modifier 'meta)
   (w32-register-hot-key [M-])
-  (w32-unregister-hot-key [M-tab])
-  (setenv "PATH"
-          (concat "C:\\msys64\\mingw64\\bin;C:\\msys64\\usr\\local\\bin;C:\\msys64\\usr\\bin;"
-                  (getenv "PATH")))
-  (setq exec-path
-        (append (list "c:/msys64/mingw64/bin"
-                      "c:/msys64/usr/local/bin"
-                      "c:/msys64/usr/bin")
-                exec-path))
-  (setenv "PS1" "\\[\\e[33m\\]\\w\\[\\e[0m\\]\\n$ ")
-  (setq shell-file-name (executable-find "bash.exe")))
+  (w32-unregister-hot-key [M-tab]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Theme hooks
@@ -443,7 +434,7 @@
                  (display-buffer-reuse-window)
                  (reusable-frames . visible))))
 
-(unless mswindows-p
+(when macosx-p
   (use-package magithub
     :after magit
     :ensure t
@@ -493,7 +484,8 @@
 
 (use-package neotree
   :ensure t
-  :bind (("C-c f t" . neotree-toggle))
+  :bind (("C-c f t" . neotree-toggle)
+         ("C-c f f" . neotree-find))
   :config
   (setq neo-theme 'ascii
         neo-window-width 24
@@ -607,8 +599,13 @@
   :config (bind-keys :map python-mode-map
                      ("C-m" . newline-and-indent)))
 
+(defvar gh/racket-mode-load-path
+  (if wsl-p
+      "/mnt/c/Users/greg/src/elisp/racket"
+    "~/src/elisp/racket"))
+
 (use-package racket-mode
-  :load-path "~/src/elisp/racket"
+  :load-path gh/racket-mode-load-path
   :init
   (apply
    #'custom-set-faces
@@ -619,8 +616,28 @@
                "/Applications/Racket_v6.10/bin/racket"
                ;;"/Applications/Racket_v7.0/bin/racket"
                ))
+        (wsl-p
+         ;; This config is actually for using Windows Subsystem for Linux
+         ;; to run _Windows_ Racket.exe on _Windows_ files outside the
+         ;; WSL file system.
+         ;;
+         ;; Otherwise, if Linux Racket is installed, could also run
+         ;; _that_ with the usual vanilla Linux setup.
+         (require 'racket-wsl)
+         ;; Assumes we have /mnt/c/Program Files/Racket-7.2 on WSL PATH.
+         ;; So all we need to do is specify "Racket.exe" not "racket".
+         (setq racket-program "Racket.exe")
+         ;; Then the path translation functions:
+         (setq racket-path-from-emacs-to-racket-function #'racket-wsl-to-windows)
+         (setq racket-path-from-racket-to-emacs-function #'racket-windows-to-wsl)
+         ;; Only because we're developing racket-mode and have the source code
+         ;; under /mnt/c, we also need this:
+         (setq racket-adjust-run-rkt #'racket-wsl-to-windows))
         (linux-p
-         (setq racket-program "/usr/racket/bin/racket"))
+         (setq racket-program "~/racket/bin/racket")
+         (setq racket-path-from-emacs-to-racket-function #'identity)
+         (setq racket-path-from-racket-to-emacs-function #'identity)
+         (setq racket-adjust-run-rkt #'identity))
         (mswindows-p
          (setq racket-program "C:\\Program Files\\Racket-7.2\\Racket.exe")))
   (setq racket-error-context 'medium)  ; 'high
