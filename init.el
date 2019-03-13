@@ -106,6 +106,8 @@
 (defun gh/show-trailing-whitespace-no ()  (setq show-trailing-whitespace nil))
 (dolist (hook '(prog-mode-hook))
   (add-hook hook #'gh/show-trailing-whitespace-yes))
+(dolist (hook '(magit-mode-hook))
+  (add-hook hook #'gh/show-trailing-whitespace-no 'append))
 
 (setq safe-local-variable-values
       '((require-final-newline . t)))
