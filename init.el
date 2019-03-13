@@ -150,7 +150,7 @@
 (require 'use-package)
 (require 'bind-key)
 
-(when macosx-p
+(when (or linux-p macosx-p)
   (use-package exec-path-from-shell ;do this early
     :ensure t
     :init (exec-path-from-shell-initialize)))
