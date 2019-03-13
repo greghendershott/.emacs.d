@@ -636,7 +636,7 @@
          ;; under /mnt/c, we also need this:
          (setq racket-adjust-run-rkt #'racket-wsl-to-windows))
         (linux-p
-         (setq racket-program "~/racket/bin/racket")
+         (setq racket-program "~/racket-7.2/bin/racket")
          (setq racket-path-from-emacs-to-racket-function #'identity)
          (setq racket-path-from-racket-to-emacs-function #'identity)
          (setq racket-adjust-run-rkt #'identity))
