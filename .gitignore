@@ -8,11 +8,14 @@ eshell/
 url/
 magithub/
 server/
+transient/
 
 bookmarks
 custom.el
 ido.last
+places
 recentf
+session.*
 smex-items
 tramp
-places
+
