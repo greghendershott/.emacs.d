@@ -1015,11 +1015,8 @@ _S_: Light    _M_: Light   _g_: Greg
 
 ;;; Various window and buffer key bindings
 
-(defun unlearn-C-x-o () (interactive) (user-error "Use C-. instead"))
-(defun unlearn-C-x-p () (interactive) (user-error "Use C-, instead"))
-
-(bind-keys ("C-x o"   . unlearn-C-x-o)
-           ("C-x p"   . unlearn-C-x-p)
+(bind-keys ("C-x o"   . gh/next-window)
+           ("C-x p"   . gh/prev-window)
            ("C-."     . gh/next-window)
            ("C-,"     . gh/prev-window)
 
