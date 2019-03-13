@@ -190,7 +190,7 @@
   (defun gh/buffer-face-variable ()
     "Use a variable font in the current buffer."
     (interactive)
-    (setq buffer-face-mode-face '(:family "Helvetica" :height 140))
+    (setq buffer-face-mode-face '(:family "Helvetica" :height (if macosx-p 140 120)))
     (buffer-face-mode))
   (dolist (hook '(Info-mode-hook))
     (add-hook hook #'gh/buffer-face-variable)))
