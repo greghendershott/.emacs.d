@@ -10,6 +10,8 @@
         gh/smarter-move-beginning-of-line
         kill-region
         kill-sexp
+        org-delete-char
+        org-self-insert-command
         paredit-backward
         paredit-backward-down
         paredit-backward-kill-word
