@@ -178,22 +178,23 @@
   (put 'aw-leading-char-face 'face-alias 'avy-lead-face)
   (put 'aw-background-face 'face-alias 'avy-background-face))
 
-(use-package buffer-face-mode
-  ;; built-in
-  :defer t
-  :init
-  (defun gh/buffer-face-fixed ()
-    "Use a fixed font in the current buffer."
-    (interactive)
-    (setq buffer-face-mode-face '(:family "Menlo" :width semi-condensed))
-    (buffer-face-mode))
-  (defun gh/buffer-face-variable ()
-    "Use a variable font in the current buffer."
-    (interactive)
-    (setq buffer-face-mode-face '(:family "Helvetica" :height (if macosx-p 140 120)))
-    (buffer-face-mode))
-  (dolist (hook '(Info-mode-hook))
-    (add-hook hook #'gh/buffer-face-variable)))
+(when macosx-p
+  (use-package buffer-face-mode
+    ;; built-in
+    :defer t
+    :init
+    (defun gh/buffer-face-fixed ()
+      "Use a fixed font in the current buffer."
+      (interactive)
+      (setq buffer-face-mode-face '(:family "Menlo" :width semi-condensed)) ;macosx specific
+      (buffer-face-mode))
+    (defun gh/buffer-face-variable ()
+      "Use a variable font in the current buffer."
+      (interactive)
+      (setq buffer-face-mode-face '(:family "Helvetica" :height 140)) ;macosx specific
+      (buffer-face-mode))
+    (dolist (hook '(Info-mode-hook))
+      (add-hook hook #'gh/buffer-face-variable))))
 
 (use-package cider
   :ensure t
