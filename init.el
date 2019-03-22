@@ -178,6 +178,25 @@
   (put 'aw-leading-char-face 'face-alias 'avy-lead-face)
   (put 'aw-background-face 'face-alias 'avy-background-face))
 
+(use-package all-the-icons
+  :ensure t
+  :config
+  ;; Racket: 1.2 scale and bright red color is too much, for me.
+  ;; Also, match more file extensions.
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.rkt[ld]?$" all-the-icons-fileicon "racket"
+                 :height 0.8
+                 :face all-the-icons-purple))
+  ;; Scheme: ditto.
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.s\\(s\\|cm\\|ls\\)$" all-the-icons-fileicon "scheme"
+                 :height 0.8
+                 :face all-the-icons-purple)))
+
+(use-package all-the-icons-dired
+  :ensure t
+  :init (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
 (when macosx-p
   (use-package buffer-face-mode
     ;; built-in
@@ -490,7 +509,7 @@
   :bind (("C-c f t" . neotree-toggle)
          ("C-c f f" . neotree-find))
   :config
-  (setq neo-theme 'ascii
+  (setq neo-theme 'icons
         neo-window-width 24
         neo-create-file-auto-open t
         neo-banner-message nil
@@ -822,13 +841,14 @@
 ;;; mode line
 
 (setq-default mode-line-format
-              '("%e" mode-line-front-space
+              '("%e"
+                mode-line-front-space
                 mode-line-client
                 mode-line-modified
                 mode-line-remote
                 mode-line-frame-identification
                 mode-line-buffer-identification
-                (vc-mode gh/vc-mode-line)
+                " " (vc-mode gh/vc-mode-line)
                 " " mode-line-position
                 " " mode-line-modes
                 " " (:propertize (:eval mode-line-misc-info) face italic)
@@ -846,7 +866,10 @@
                 ")"))
 
 (defconst gh/vc-mode-line
-  '(" on "
+  '((:propertize
+     (:eval (format "%s" (all-the-icons-octicon "git-branch")))
+     face (:height 1.3 :family (:eval (all-the-icons-octicon-family)))
+     display (raise -0.1))
     (:propertize
      ;; Strip the prefix (e.g. "Git-") leaving just the branch name.
      (:eval (let ((backend (symbol-name (vc-backend (buffer-file-name)))))
