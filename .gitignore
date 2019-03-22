@@ -5,10 +5,11 @@
 auto-save-list/
 elpa/
 eshell/
-url/
+imagedired/
 magithub/
 server/
 transient/
+url/
 
 bookmarks
 custom.el
