@@ -272,17 +272,6 @@
                      ("C-M-p" . dired-subtree-previous-sibling)
                      ("C-M-n" . dired-subtree-next-sibling)))
 
-(use-package dired-subtree
-  :ensure t
-  :init (setq dired-subtree-use-backgrounds nil
-              dired-subtree-cycle-depth 16)
-  :config (bind-keys :map dired-mode-map
-                     ;; With C-u prefix expands N deep.
-                     ;; C-u TAB will expand 4
-                     ;; C-u C-u TAB will expand 16
-                     ;; C-u C-u C-u TAB will expand 64
-                     ("TAB" . dired-subtree-cycle)))
-
 (use-package diminish
   :ensure t)
 
