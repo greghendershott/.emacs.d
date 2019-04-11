@@ -600,8 +600,8 @@
   (add-to-list 'projectile-globally-ignored-directories "compiled")
 
   (projectile-register-project-type 'racket '("info.rkt")
-                                    :compile "raco setup %s"
-                                    :test "raco test %s")
+                                    :compile "make setup"
+                                    :test "make test")
 
   (defun gh/neotree-project-root (&optional directory)
     "Open a NeoTree browser for a project DIRECTORY."
