@@ -243,6 +243,11 @@
         company-show-numbers t
         company-require-match nil))
 
+(use-package compilation-mode
+  ;; built-in
+  :defer t
+  :init (setq compilation-scroll-output 'next-error))
+
 (use-package copyright
   ;; built-in
   :init (setq copyright-names-regexp "Greg Hendershott"
