@@ -24,7 +24,7 @@
       ((boundp 'menu-bar-mode) (menu-bar-mode -1)))
 
 (case window-system
-  (x (set-frame-font "DejaVu Sans Mono 11")))
+  (x (set-frame-font "Ubuntu Mono 12")))
 
 (setq text-scale-mode-step 1.1)         ;finer inc/dec than default 1.2
 
