@@ -453,12 +453,6 @@
                  (display-buffer-reuse-window)
                  (reusable-frames . visible))))
 
-(when macosx-p
-  (use-package magithub
-    :after magit
-    :ensure t
-    :config (magithub-feature-autoinject t)))
-
 (use-package markdown-mode
   :ensure t
   :mode (("\\.text\\'"     . markdown-mode)
