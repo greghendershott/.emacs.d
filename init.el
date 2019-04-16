@@ -865,7 +865,7 @@
 (defconst gh/vc-mode-line
   '((:propertize
      (:eval (format "%s" (all-the-icons-octicon "git-branch")))
-     face (:height 1.3 :family (:eval (all-the-icons-octicon-family)))
+     face (:height 1.0 :family "github-octicons")
      display (raise -0.1))
     (:propertize
      ;; Strip the prefix (e.g. "Git-") leaving just the branch name.
