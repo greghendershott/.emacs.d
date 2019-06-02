@@ -1096,6 +1096,19 @@
   (interactive "p")
   (other-window (- count)))
 
+;; Window splits that move to the new window
+
+(defun gh/split-window-below ()
+  (interactive)
+  (split-window-below)
+  (other-window 1))
+
+(defun gh/split-window-right ()
+  (interactive)
+  (split-window-right)
+  (other-window 1))
+
+
 ;; Splitter drag
 
 (require 'windmove)
@@ -1161,11 +1174,13 @@ _S_: Light    _M_: Light   _g_: Greg
            ("C-,"     . gh/prev-window)
 
            ("C-x 1"   . delete-other-windows-vertically)
+           ("C-x 2"   . gh/split-window-below)
+           ("C-x 3"   . gh/split-window-right)
 
            ("C-c w =" . balance-windows)
            ("C-c w k" . delete-window)
-           ("C-c w /" . split-window-right)
-           ("C-c w -" . split-window-below)
+           ("C-c w /" . gh/split-window-right)
+           ("C-c w -" . gh/split-window-below)
            ("C-c w s" . gh/splitter-drag-hydra/body)
            ("C-c w m" . delete-other-windows)
            ("C-c w d" . gh/toggle-current-window-dedication)
