@@ -1314,7 +1314,7 @@ Credit: <http://irreal.org/blog/?p=374>"
     (goto-char e)
     (set-marker e nil)))
 
-(defun toggle-show-trailing-whitespace ()
+(defun gh/toggle-show-trailing-whitespace ()
   (interactive)
   (setq show-trailing-whitespace (not show-trailing-whitespace))
   (redraw-display)
@@ -1326,7 +1326,8 @@ Credit: <http://irreal.org/blog/?p=374>"
            ("C-c t l" . toggle-truncate-lines)
            ("C-c t n" . gh/narrow-or-widen-dwim)
            ("C-c t q" . toggle-debug-on-quit)
-           ("C-c t w" . toggle-show-trailing-whitespace))
+           ("C-c t v" . visual-line-mode)
+           ("C-c t w" . gh/toggle-show-trailing-whitespace))
 
 (defun gh/isearch-delete-something ()
   "Delete non-matching text or the last character.
