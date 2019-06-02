@@ -11,6 +11,7 @@
         kill-region
         kill-sexp
         org-delete-char
+        org-end-of-line
         org-self-insert-command
         paredit-backward
         paredit-backward-down
