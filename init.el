@@ -496,66 +496,46 @@
   (use-package mu4e
     :load-path "/usr/share/emacs/site-lisp/mu4e"
     :config
+    (bind-key "C-c a m" #'mu4e)
     (require 'org-mu4e)
     (bind-keys :map mu4e-headers-mode-map
                ("C-c C-c" . org-mu4e-store-and-capture))
     (bind-keys :map mu4e-view-mode-map
                ("C-c C-c" . org-mu4e-store-and-capture))
-    ;; use mu4e for e-mail in emacs
+
     (setq mail-user-agent 'mu4e-user-agent)
 
     (setq mu4e-maildir "/home/greg/Maildir")
 
-    (setq mu4e-trash-folder  "/greg-gmail/trash")
-    (setq mu4e-drafts-folder "/greg-gmail/drafts")
+    (setq mu4e-trash-folder  "/greg/Trash")
+    (setq mu4e-drafts-folder "/greg/Drafts")
+    (setq mu4e-sent-folder   "/greg/Sent")
+    (setq mu4e-sent-messages-behavior 'sent)
 
-    ;; We don't actually mbsync /sent -- Gmail automatically adds its `Sent`
-    ;; and `All Mail` labels when we use its SMTP. However mu4e will complain
-    ;; unless this is set to a folder, even if it doesn't use it.
-    (setq mu4e-sent-folder            "/greg-gmail/sent"
-          mu4e-sent-messages-behavior 'delete)
+    (setq mu4e-attachment-dir  "~/Downloads") ;not ~/
 
-    ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
-    ;; additional non-Gmail addresses and want assign them different
-    ;; behavior.)
-
-    ;; Rename files when moving -- needed for mbsync to avoid duplicate UID
+    ;; Rename files when moving -- needed with mbsync to avoid duplicate UID
     ;; errors!
     (setq mu4e-change-filenames-when-moving t)
 
-    ;; Important: The (d)elete action doesn't work properly with Gmail IMAP.
-    ;; Instead want to (m)ove the email to the "[Gmail]/Trash" folder (which
-    ;; I've set mbsync to rename to simply "trash").
-    (defun gh/mu4e-headers-move-to-trash ()
-      (interactive)
-      (mu4e-mark-set 'move mu4e-trash-folder)
-      (mu4e-headers-next))
-    (defun gh/mu4e-view-move-to-trash (&optional n)
-      (interactive "P")
-      (mu4e~view-in-headers-context
-       (gh/mu4e-headers-move-to-trash)
-       (mu4e~headers-move (or n 1))))
-    (bind-key "d" #'gh/mu4e-headers-move-to-trash mu4e-headers-mode-map)
-    (bind-key "d" #'gh/mu4e-view-move-to-trash    mu4e-view-mode-map)
-
-    ;; setup some handy shortcuts for Gmail IMAP semantics
     (setq mu4e-maildir-shortcuts
-          '(("/greg-gmail/INBOX" . ?i)
-            ("/greg-gmail/trash" . ?t)
-            ("/greg-gmail/all"   . ?a)))
+          '(("/greg/INBOX"  . ?i)
+            ("/greg/Drafts" . ?d)
+            ("/greg/Sent"   . ?s)
+            ("/greg/Trash"  . ?t)
+            ("/archive"     . ?a)))
 
-    ;; allow for updating mail using 'U' in the main view:
-    (setq mu4e-get-mail-command "mbsync greg-gmail")
+    (setq mu4e-get-mail-command "mbsync greg")
 
     (setq mu4e-bookmarks
           (list
            (make-mu4e-bookmark
             :name "Unread"
-            :query "flag:unread AND NOT flag:trashed AND NOT maildir:/greg-gmail/trash AND NOT maildir:/greg-gmail/spam"
+            :query "flag:unread AND NOT flag:trashed AND NOT maildir:/greg/trash AND NOT maildir:/greg/spam"
             :key ?u)
-           (make-mu4e-bookmark
+           (make-mu4e-bookmark ;Not just /greg//sent folder, also includes /archive
             :name "Sent"
-            :query "from:greghendershott@gmail.com AND NOT flag:trashed AND NOT maildir:/greg-gmail/trash"
+            :query "from:greghendershott@gmail.com OR from:mail@greghendershott.com AND NOT flag:trashed AND NOT maildir:/greg/trash"
             :key ?s)
            (make-mu4e-bookmark
             :name "Last week"
@@ -574,38 +554,76 @@
             :query "list:racket-dev.googlegroups.com OR to:racket-dev@googlegroups.com OR cc:racket-dev@googlegroups.com  OR list:dev.racket-lang.org OR to:dev@lists.racket-lang.org OR cc:dev@lists.racket-lang.org"
             :key ?R)))
 
-    ;; something about ourselves
-    (setq user-mail-address "greghendershott@gmail.com"
+    ;;; Sending
+    (require 'smtpmail)
+    (setq message-send-mail-function 'smtpmail-send-it
+          starttls-use-gnutls t
+          smtpmail-starttls-credentials '(("smtp.fastmail.com" 587 nil nil))
+          smtpmail-auth-credentials '(("smtp.fastmail.com" 587 "mail@greghendershott.com" nil))
+          smtpmail-default-smtp-server "smtp.fastmail.com"
+          smtpmail-smtp-server "smtp.fastmail.com"
+          smtpmail-smtp-service 587)
+
+    (setq mu4e-user-mail-address-list '("mail@greghendershott.com"
+                                        "git@greghendershott.com"
+                                        "racket@greghendershott.com"
+                                        "greghendershott@gmail.com"
+                                        "greghendershott@yahoo.com"
+                                        "greghendershott@hotmail.com"))
+    (setq user-mail-address "mail@greghendershott.com"
           user-full-name    "Greg Hendershott")
     (setq mu4e-compose-signature "Greg Hendershott"
           mu4e-compose-signature-auto-include nil)
 
-    ;; sending mail -- also, make sure the gnutls command line utils are
-    ;; installed package 'gnutls-bin' in Debian/Ubuntu
-    (require 'smtpmail)
-    (setq message-send-mail-function 'smtpmail-send-it
-          starttls-use-gnutls t
-          smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-          smtpmail-auth-credentials
-          '(("smtp.gmail.com" 587 "greghendershott@gmail.com" nil))
-          smtpmail-default-smtp-server "smtp.gmail.com"
-          smtpmail-smtp-server "smtp.gmail.com"
-          smtpmail-smtp-service 587)
     (setq mu4e-compose-dont-reply-to-self t)
-
-    (setq mu4e-attachment-dir  "~/Downloads") ;not ~/
 
     ;; rice
     (setq mu4e-view-show-addresses t)
     (setq mu4e-use-fancy-chars nil)
     (setq mu4e-headers-fields '( (:human-date     .   12)
                                  (:flags          .    6)
-                                 (:mailing-list   .   10)
-                                 (:from           .   22)
+                                 (:mailing-list   .   11)
+                                 (:from           .   16)
                                  (:thread-subject .   nil)))
+    ;; Really, REALLY prefer text over html format.
+    (setq mu4e-view-html-plaintext-ratio-heuristic most-positive-fixnum)
+    ;; TODO: Add this to make it apparent to whom the email was sent,
+    ;; e.g. info@greghendershott.com spam.
+    ;;
+    ;; (add-to-list 'mu4e-view-fields
+    ;;              '(:X-Delivered-To .
+    ;;                                (:name
+    ;;                                 "X-Delivered-To"
+    ;;                                 :function
+    ;;                                 (lambda (msg)
+    ;;                                   (or (mu4e-message-field msg :X-Delivered-To)
+    ;;                                       "")))))
+    (add-hook 'mu4e-view-mode-hook 'visual-line-mode)
 
     ;; don't keep message buffers around
-    (setq message-kill-buffer-on-exit t)))
+    (setq message-kill-buffer-on-exit t)
+
+    ;; Contexts
+    (defun gh/racket-mailing-list-p (msg)
+      "Is MSG from one of the Racket lists?"
+      (and (member (mu4e-message-field msg :mailing-list)
+                   '("racket-users.googlegroups.com"
+                     "racket-dev.googlegroups.com"
+                     "racket-money.googlegroups.com"))
+           t))
+    (setq mu4e-contexts
+          `(,(make-mu4e-context
+              :name "Personal"
+              :vars '((user-mail-address . "mail@greghendershott.com"))
+              :match-func (lambda (msg)
+                            (and msg (not (gh/racket-mailing-list-p msg)))))
+            ,(make-mu4e-context
+              :name "Racket"
+              :vars '((user-mail-address . "racket@greghendershott.com"))
+              :match-func (lambda (msg)
+                            (and msg (gh/racket-mailing-list-p msg))))))
+    (setq mu4e-context-policy 'ask)
+    (setq mu4e-compose-context-policy 'ask)))
 
 (use-package multiple-cursors
   :ensure t
@@ -918,7 +936,7 @@
           ;; Drop my personal prefix
           ("\\`gh/"  . "")))
   (which-key-declare-prefixes
-    ;; "C-c a" "applications"
+    "C-c a" "applications"
     "C-c b" "buffers"
     "C-c c" "cursors"
     ;; "C-c e" "errors"
