@@ -218,6 +218,11 @@
     (dolist (hook '(Info-mode-hook))
       (add-hook hook #'gh/buffer-face-variable))))
 
+(use-package calendar
+  ;; I'm using this only for history from exported Gmail calendar.
+  ;; For new/active appointments and events, using calendar.org.
+  :config (setq diary-file "~/Documents/diary"))
+
 (use-package cider
   :ensure t
   :defer t
