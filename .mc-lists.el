@@ -34,6 +34,7 @@
         paredit-wrap-square
         racket--paredit-open-square
         racket-cycle-paren-shapes
+        wdired-downcase-word
         ))
 
 (setq mc/cmds-to-run-once
