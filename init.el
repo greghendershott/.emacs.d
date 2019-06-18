@@ -312,6 +312,11 @@
   :ensure t
   :defer t)
 
+(use-package flyspell
+  :config (bind-keys :map flyspell-mode-map
+                     ("C-." . gh/next-window)
+                     ("C-," . gh/prev-window)))
+
 (use-package font-lock-studio
   :ensure t
   :defer t)
@@ -448,6 +453,7 @@
          ("C-c g l" . magit-log-buffer-file)
          ("C-c g p" . magit-pull))
   :config
+  (add-hook 'git-commit-setup-hook #'git-commit-turn-on-flyspell)
   (add-to-list 'display-buffer-alist
                `(,(rx bos "*magit: ")
                  (display-buffer-reuse-window)
