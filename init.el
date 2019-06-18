@@ -654,7 +654,6 @@
            (nxml-attribute-local-name ((t (:foreground "wheat3" :slant italic))))
            (nxml-delimiter            ((t (:foreground "wheat3")))))))
 
-(require 'org)
 (use-package org
   :mode (("\\.org\\'" . org-mode))
   :defer t
@@ -664,22 +663,34 @@
          ("C-c o l" . org-store-link))
   :config
   (setq org-agenda-files '("~/Documents/todo.org"
+                           "~/Documents/calendar.org"
                            "~/Documents/greg.org"
-                           "~/Documents/biomantica.org"
                            "~/README.org")
-        org-startup-indented t
-        org-todo-keyword-faces
+        org-default-notes-file "~/Documents.greg.org")
+  (setq org-agenda-start-on-weekday 1)
+  (setq org-capture-templates
+        '(("t" "todo no deadline" entry (file+headline "~/Documents/todo.org" "Todo")
+           "* TODO %? %a")
+          ("2" "todo 2d deadline" entry (file+headline "~/Documents/todo.org" "Todo")
+           "* TODO %? %a\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))")
+          ;; FIXME: improve org-read-date getting _time_ out of selected text
+          ("c" "calendar item" entry (file+headline "~/Documents/calendar.org" "Items")
+           "* %? %a %(org-insert-time-stamp (org-read-date t t \"%i\"))")))
+  (setq org-startup-indented t)
+  (setq org-todo-keyword-faces
         '(("TODO" . (:foreground "IndianRed" :weight bold))
           ("WAIT" . (:foreground "DarkOrange2" :weight bold))
           ("DONE" . (:foreground "SeaGreen" :weight normal))))
-  (setq org-capture-templates
-        '(("2" "deadline 2 days" entry (file+headline "~/Documents/todo.org" "Todo")
-           "* TODO %a %?\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))")))
   (setq-default org-catch-invisible-edits 'smart)
   (bind-key "C-c k" #'gh/insert-key org-mode-map))
 
-;; (use-package org-present
-;;   :load-path "~/src/elisp/org-present")
+(use-package org-bullets
+  :ensure t
+  :init (add-hook 'org-mode-hook 'org-bullets-mode)
+  :config (setq org-bullets-bullet-list '("▸")))
+
+(use-package org-present
+  :ensure t)
 
 (use-package package-lint
   :ensure t)
