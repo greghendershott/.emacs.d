@@ -708,7 +708,11 @@
   :config (setq org-bullets-bullet-list '("▸")))
 
 (use-package org-present
-  :ensure t)
+  ;; Note: When I installed from ELPA, it wanted a newer version of Org, which
+  ;; led to some other problems. But AFAICT it doesn't need a newer version of
+  ;; Org, and it's just a single .el file, so just git clone it.
+  :bind (("C-c o p" . org-present))
+  :load-path "~/src/elisp/org-present")
 
 (use-package package-lint
   :ensure t)
