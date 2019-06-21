@@ -689,6 +689,8 @@
   (setq org-capture-templates
         '(("t" "todo no deadline" entry (file+headline "~/Documents/todo.org" "Todo")
            "* TODO %? %a")
+          ("0" "todo 0d deadline" entry (file+headline "~/Documents/todo.org" "Todo")
+           "* TODO %? %a\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))")
           ("2" "todo 2d deadline" entry (file+headline "~/Documents/todo.org" "Todo")
            "* TODO %? %a\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))")
           ;; FIXME: improve org-read-date getting _time_ out of selected text
