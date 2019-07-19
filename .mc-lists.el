@@ -8,6 +8,7 @@
         cljr-raise-sexp
         forward-sexp
         gh/smarter-move-beginning-of-line
+        indent-for-tab-command
         kill-region
         kill-sexp
         org-delete-char
