@@ -35,6 +35,7 @@
         paredit-wrap-square
         racket--paredit-open-square
         racket-cycle-paren-shapes
+        transpose-sexps
         wdired-downcase-word
         ))
 
