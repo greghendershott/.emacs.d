@@ -900,6 +900,12 @@
         solarized-height-plus-3 1.0
         solarized-height-plus-4 1.0))
 
+(use-package sudo-edit
+  :ensure t)
+
+(use-package toml-mode
+  :ensure t)
+
 (use-package tramp
   :config
   (setq tramp-default-method "ssh"))
