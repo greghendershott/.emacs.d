@@ -680,12 +680,14 @@
          ("C-c o c" . org-capture)
          ("C-c o l" . org-store-link))
   :config
+  (setq org-agenda-window-setup 'current-window)
   (setq org-agenda-files '("~/Documents/todo.org"
                            "~/Documents/calendar.org"
                            "~/Documents/greg.org"
                            "~/README.org")
         org-default-notes-file "~/Documents.greg.org")
   (setq org-agenda-start-on-weekday 1)
+  (setq org-deadline-warning-days 0)
   (setq org-capture-templates
         '(("t" "todo no deadline" entry (file+headline "~/Documents/todo.org" "Todo")
            "* TODO %? %a")
