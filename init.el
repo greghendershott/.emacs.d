@@ -249,6 +249,10 @@
         company-show-numbers t
         company-require-match nil))
 
+(use-package company-quickhelp
+  :ensure t
+  :defer t)
+
 (use-package compilation-mode
   ;; built-in
   :defer t
