@@ -88,18 +88,19 @@
 ;; Other customizations
 (column-number-mode t)
 (line-number-mode t)
-(setq make-backup-files nil)         ;stop creating those backup~ files
-(setq auto-save-default nil)         ;stop creating those #autosave# files
+(setq make-backup-files nil)            ;stop creating those backup~ files
+(setq auto-save-default nil)            ;stop creating those #autosave# files
 (setq-default major-mode 'text-mode)
-(setq-default indent-tabs-mode nil)  ;spaces instead of TAB chars
-(setq-default tab-width 4)
-(add-hook 'emacs-lisp-mode-hook (lambda () (setq tab-width 8)))
-(setq echo-keystrokes 0.1)           ;show keys immediately
+(setq-default indent-tabs-mode nil)     ;spaces instead of TAB chars
+(setq-default tab-width 4)              ;existing files with TABs get width of 4
+(add-hook 'emacs-lisp-mode-hook         ;but Emacs' Elisp wants 8 for alignment
+          (lambda () (setq tab-width 8)))
+(setq tab-always-indent 'complete)
+(setq echo-keystrokes 0.1)              ;show keys immediately
 (setq scroll-down-aggressively 0.1)
 (setq scroll-up-aggressively 0.1)
-
-(setq tab-always-indent 'complete)
-(delete-selection-mode 1)          ;especially nice with expand-region
+(setq help-window-select t)             ;so I can scroll etc. then nav back or quit
+(delete-selection-mode 1)               ;especially nice with expand-region
 
 ;; Show trailing whitespace in certain modes.
 (setq-default show-trailing-whitespace nil)
