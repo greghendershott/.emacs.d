@@ -11,8 +11,12 @@
         indent-for-tab-command
         kill-region
         kill-sexp
+        org-beginning-of-line
         org-delete-char
         org-end-of-line
+        org-force-self-insert
+        org-kill-line
+        org-meta-return
         org-self-insert-command
         paredit-backward
         paredit-backward-down
