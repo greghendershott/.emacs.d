@@ -331,6 +331,10 @@
   :ensure t
   :defer t)
 
+(use-package forge
+  :ensure t
+  :after magit)
+
 (use-package frame
   :bind (("C-c w F" . toggle-frame-fullscreen))
   :init

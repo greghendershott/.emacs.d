@@ -5,8 +5,9 @@
 auto-save-list/
 elpa/
 eshell/
+forge-database.sqlite
 imagedired/
-magithub/
+racket-mode/
 server/
 transient/
 url/
