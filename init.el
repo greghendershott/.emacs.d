@@ -319,6 +319,42 @@
   :init (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
           (add-hook hook #'turn-on-elisp-slime-nav-mode)))
 
+(use-package eink-theme
+  :ensure t
+  :defer t
+  :init
+  (defun gh/eink-theme-hook ()
+    ;; I need more contrast in active vs inactive
+    (set-face-attribute 'mode-line nil
+                        :height 0.9
+                        :background "grey75")
+    (set-face-attribute 'mode-line-inactive nil
+                        :height 0.9)
+    ;; Um I need fringe for step debug, error position, etc.
+    (set-face-attribute 'fringe nil
+                        :foreground (face-attribute 'default :foreground)
+                        :background (face-attribute 'default :background))
+    ;; A /little/ less monochromatic: I like function names to be bold, but
+    ;; not comments.
+    (set-face-attribute 'font-lock-function-name-face nil
+                        :weight 'bold)
+    (set-face-attribute 'cursor nil
+                        :background "orange")
+    (dolist (face '(font-lock-comment-face
+                    font-lock-doc-face))
+      (set-face-attribute face nil
+                          :weight 'normal
+                          :slant 'normal
+                          :foreground (face-attribute
+                                       'font-lock-comment-delimiter-face
+                                       :foreground)))
+    ;; Use color for strings and constants.
+    (dolist (face '(font-lock-string-face
+                    font-lock-constant-face))
+      (set-face-attribute face nil
+                          :foreground "SeaGreen")))
+  (gh/add-theme-hook 'eink #'gh/eink-theme-hook))
+
 (use-package engine-mode
   :ensure t
   :config
@@ -377,12 +413,6 @@
             (lambda ()
               (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
                 (ggtags-mode 1)))))
-
-(use-package greg-theme
-  :load-path "~/src/elisp/greg-theme/"
-  :defer t
-  :init
-  (add-to-list 'custom-theme-load-path "~/src/elisp/greg-theme/"))
 
 (use-package haskell-mode
  :ensure t
@@ -1244,15 +1274,15 @@ Themes
 
 ^Solarized^   ^Material^   ^Other^
 ----------------------------------------------------
-_s_: Dark     _m_: Dark    _z_: Zenburn  _DEL_: none
-_S_: Light    _M_: Light   _g_: Greg
+_s_: Dark     _m_: Dark    _z_: Zenburn
+_S_: Light    _M_: Light   _e_: Eink     _DEL_: none
 "
   ("s" (load-theme 'solarized-dark  t))
   ("S" (load-theme 'solarized-light t))
   ("m" (load-theme 'material        t))
   ("M" (load-theme 'material-light  t))
   ("z" (load-theme 'zenburn         t))
-  ("g" (load-theme 'greg            t))
+  ("e" (load-theme 'eink            t))
   ("DEL" (gh/disable-all-themes))
   ("RET" nil "done" :color blue))
 
