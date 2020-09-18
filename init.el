@@ -48,6 +48,11 @@
   (w32-register-hot-key [M-])
   (w32-unregister-hot-key [M-tab]))
 
+;; Open second frame to devote to mu4e and Org Agenda. Giving it a specific
+;; name lets a window manager do things assign to a specific workspace -- e.g.
+;; one workspace for Emacs programming, and another for Emacs mail/org-mode.
+(make-frame '((name . "Emacs Mail/Org")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Theme hooks
 
