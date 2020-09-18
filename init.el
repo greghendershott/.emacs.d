@@ -881,8 +881,8 @@
 
 (defvar gh/racket-mode-load-path
   (if wsl-p
-      "/mnt/c/Users/greg/src/elisp/racket"
-    "~/src/elisp/racket"))
+      "/mnt/c/Users/greg/src/elisp/racket-mode"
+    "~/src/elisp/racket-mode"))
 
 (use-package racket-mode
   :load-path gh/racket-mode-load-path
@@ -891,6 +891,11 @@
    #'custom-set-faces
    `((racket-keyword-argument-face ((t (:foreground "IndianRed3"))))))
   :config
+  (require 'racket-xp)
+  (add-hook 'racket-mode-hook #'racket-xp-mode)
+  (setq racket-repl-buffer-name-function
+        #'racket-repl-buffer-name-project)
+  (add-to-list 'racket-logger-config '(racket-mode . debug))
   (cond (macosx-p
          (setq racket-program
                "/Applications/Racket_v6.10/bin/racket"
@@ -914,7 +919,7 @@
          ;; under /mnt/c, we also need this:
          (setq racket-adjust-run-rkt #'racket-wsl-to-windows))
         (linux-p
-         (setq racket-program "~/racket/7.3/bin/racket")
+         (setq racket-program "~/racket/7.7/bin/racket")
          (setq racket-path-from-emacs-to-racket-function #'identity)
          (setq racket-path-from-racket-to-emacs-function #'identity)
          (setq racket-adjust-run-rkt #'identity))
@@ -926,10 +931,10 @@
     (bind-keys :map racket-mode-map
                ("M-]" . racket-align)
                ("M-}" . racket-unalign))))
+
 (use-package scribble-mode
   :ensure t
   :defer t)
-
 
 (use-package rainbow-delimiters
   :ensure t)
