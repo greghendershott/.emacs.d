@@ -762,6 +762,18 @@
                            "~/README.org")
         org-default-notes-file "~/Documents.greg.org")
   (setq org-agenda-start-on-weekday 1)
+  (setq org-agenda-prefix-format
+        ;; '((agenda   . " %i %-12:c%?-12t% s")
+        ;;   (timeline . "  % s")
+        ;;   (todo     . " %i %-12:c")
+        ;;   (tags     . " %i %-12:c")
+        ;;   (search . " %i %-12:c"))
+        '((agenda   . "  %?-12t% s")
+          (timeline . "  % s")
+          (todo     . "")
+          (tags     . "")
+          (search   . ""))
+        )
   (setq org-deadline-warning-days 0)
   (setq org-capture-templates
         '(("t" "todo no deadline" entry (file+headline "~/Documents/todo.org" "Todo")
@@ -772,7 +784,10 @@
            "* TODO %? %a\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))")
           ;; FIXME: improve org-read-date getting _time_ out of selected text
           ("c" "calendar item" entry (file+headline "~/Documents/calendar.org" "Items")
-           "* %? %a %(org-insert-time-stamp (org-read-date t t \"%i\"))")))
+           "* %? %a %(org-insert-time-stamp (org-read-date t t \"%i\"))")
+          ("n" "misc note" entry (file+headline "~/Documents/greg.org" "Web Captures")
+           "* %c\n%u\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n")))
+  (setq org-protocol-default-template-key "n")
   (setq org-startup-indented t)
   (setq org-todo-keyword-faces
         '(("TODO" . (:foreground "IndianRed" :weight bold))
@@ -780,6 +795,10 @@
           ("DONE" . (:foreground "SeaGreen" :weight normal))))
   (setq-default org-catch-invisible-edits 'smart)
   (bind-key "C-c k" #'gh/insert-key org-mode-map))
+
+(use-package org-protocol
+  :after org
+  :config (server-start))
 
 (use-package org-bullets
   :ensure t
