@@ -1339,7 +1339,7 @@ _S_: Light    _M_: Light   _e_: Eink     _DEL_: none
            ("C-c w d" . gh/toggle-current-window-dedication)
            ("C-c w t" . gh/themes-hydra/body)
 
-           ("C-c b B" . ibuffer))
+           ("C-c b b" . ibuffer))
 
 (bind-keys :map org-mode-map ("C-," . gh/prev-window))
 
