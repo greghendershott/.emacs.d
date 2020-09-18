@@ -644,12 +644,21 @@
 
     (setq mu4e-compose-dont-reply-to-self t)
 
+    ;; customize the reply-quote-string
+    (setq message-citation-line-format
+          "On %a %d %b %Y at %R, %f wrote:")
+    ;; choose to use the formatted string
+    (setq message-citation-line-function
+          'message-insert-formatted-citation-line)
+
+    (add-hook 'mu4e-view-mode-hook 'visual-line-mode)
+
     ;; rice
     (setq mu4e-view-show-addresses t)
     (setq mu4e-use-fancy-chars nil)
     (setq mu4e-headers-fields '( (:human-date     .   12)
                                  (:flags          .    6)
-                                 (:mailing-list   .   11)
+                                 ;(:mailing-list   .   11)
                                  (:from           .   16)
                                  (:thread-subject .   nil)))
     ;; Really, REALLY prefer text over html format.
@@ -665,7 +674,6 @@
     ;;                                 (lambda (msg)
     ;;                                   (or (mu4e-message-field msg :X-Delivered-To)
     ;;                                       "")))))
-    (add-hook 'mu4e-view-mode-hook 'visual-line-mode)
 
     ;; don't keep message buffers around
     (setq message-kill-buffer-on-exit t)
