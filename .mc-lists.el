@@ -49,6 +49,7 @@
         beginning-of-buffer
         cider-find-and-clear-repl-output
         cljr-slash
+        insert-parentheses
         racket-unalign
         smex
         ))
