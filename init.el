@@ -1077,7 +1077,8 @@
     "C-c p" "projects"
     "C-c s" "search"
     "C-c t" "toggle"
-    "C-c w" "windows/frames")
+    "C-c w" "windows/frames"
+    "C-c x" "xrefs")
 
   (which-key-declare-prefixes-for-mode 'markdown-mode
     "C-c TAB" "markdown/images"
@@ -1091,6 +1092,13 @@
   (bind-key "C-c h b" #'describe-personal-keybindings)
 
   :diminish which-key-mode)
+
+(use-package xref
+  :bind (("C-c x a"   . #'xref-find-apropos)
+         ("C-c x . ." . #'xref-find-definitions)
+         ("C-c x . w" . #'xref-find-definitions-other-window)
+         ("C-c x . f" . #'xref-find-definitions-other-frame)
+         ("C-c x r"   . #'xref-find-references)))
 
 (use-package yaml-mode
   :ensure t
