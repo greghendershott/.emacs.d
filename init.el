@@ -1,5 +1,18 @@
 ;;; init.el --- Emacs init file
 
+;; `load-prefer-newer': This is nil by default -- Emacs always prefers .elc,
+;; even when .el is newer. Instead, I want to load .el when newer than .elc.
+;; This helps when e.g. I'm working on Racket Mode. It means I'll never get
+;; confused by Emacs using stale bytecode. I'm in the habit of doing a `make
+;; clean` to avoid this... but eliminating a possible confusion is always
+;; good.
+;;
+;; [Setting `load-prefer-newer' true here is of course N/A for this init.el
+;; file itself -- if it were already loaded from bytecode, it would be too
+;; late. In Emacs 27+ this could go in the new early-init.el. Anyway I never
+;; byte-compile my init file so it's moot for me.]
+(setq load-prefer-newer t)
+
 (eval-when-compile
   (require 'cl))
 
