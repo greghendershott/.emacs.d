@@ -195,7 +195,7 @@
 (require 'use-package)
 (require 'bind-key)
 
-(when (or linux-p macosx-p)
+(when macosx-p
   (use-package exec-path-from-shell ;do this early
     :ensure t
     :init (exec-path-from-shell-initialize)))
@@ -798,8 +798,7 @@
           (timeline . "  % s")
           (todo     . "")
           (tags     . "")
-          (search   . ""))
-        )
+          (search   . "")))
   (setq org-deadline-warning-days 0)
   (setq org-capture-templates
         '(("t" "todo no deadline" entry (file+headline "~/Documents/todo.org" "Todo")
@@ -819,6 +818,7 @@
         '(("TODO" . (:foreground "IndianRed" :weight bold))
           ("WAIT" . (:foreground "DarkOrange2" :weight bold))
           ("DONE" . (:foreground "SeaGreen" :weight normal))))
+  (setq org-ellipsis " ⋯ ")
   (setq-default org-catch-invisible-edits 'smart)
   (bind-key "C-c k" #'gh/insert-key org-mode-map))
 
@@ -945,7 +945,7 @@
          ;; under /mnt/c, we also need this:
          (setq racket-adjust-run-rkt #'racket-wsl-to-windows))
         (linux-p
-         (setq racket-program "~/racket/7.7/bin/racket")
+         (setq racket-program "~/racket/8.0.0.12/bin/racket")
          (setq racket-path-from-emacs-to-racket-function #'identity)
          (setq racket-path-from-racket-to-emacs-function #'identity)
          (setq racket-adjust-run-rkt #'identity))
