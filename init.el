@@ -326,6 +326,19 @@
 (use-package diminish
   :ensure t)
 
+(use-package doom-themes
+  :ensure t
+  :defer t
+  :init
+  (defun gh/nord-theme-hook ()
+    (doom-themes-org-config) ;this is nice but...
+    (org-bullets-mode 0)    ;need to toggle this off...
+    (org-bullset-mode 1)    ;and on again, afterwards
+    (doom-themes-neotree-config)
+    (setq doom-themes-neotree-file-icons t)) ;not default 'simple
+  (gh/add-theme-hook 'doom-nord       #'gh/nord-theme-hook)
+  (gh/add-theme-hook 'doom-nord-light #'gh/nord-theme-hook))
+
 (use-package elisp-slime-nav
   :ensure t
   :diminish 'elisp-slime-nav-mode
@@ -1325,15 +1338,17 @@
   "
 Themes
 
-^Solarized^   ^Material^   ^Other^
-----------------------------------------------------
-_s_: Dark     _m_: Dark    _z_: Zenburn
-_S_: Light    _M_: Light   _e_: Eink     _DEL_: none
+^Solarized^   ^Material^   ^Nord^       ^Other^
+-----------------------------------------------------------------
+_s_: Dark     _m_: Dark    _n_: Dark    _z_: Zenburn
+_S_: Light    _M_: Light   _N_: Light   _e_: Eink     _DEL_: none
 "
   ("s" (load-theme 'solarized-dark  t))
   ("S" (load-theme 'solarized-light t))
   ("m" (load-theme 'material        t))
   ("M" (load-theme 'material-light  t))
+  ("n" (load-theme 'doom-nord       t))
+  ("N" (load-theme 'doom-nord-light t))
   ("z" (load-theme 'zenburn         t))
   ("e" (load-theme 'eink            t))
   ("DEL" (gh/disable-all-themes))
