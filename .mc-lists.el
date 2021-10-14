@@ -35,6 +35,7 @@
         paredit-open-curly
         paredit-open-round
         paredit-raise-sexp
+        paredit-semicolon
         paredit-wrap-round
         paredit-wrap-square
         racket--paredit-open-square
