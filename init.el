@@ -1117,14 +1117,6 @@
   :ensure t
   :mode "\\.yml\\'")
 
-(use-package yasnippet
-  :disabled t
-  :ensure t
-  :diminish yas-minor-mode
-  :config
-  (yas-global-mode 1)
-  (setq-default yas-prompt-functions '(yas-ido-prompt yas-dropdown-prompt)))
-
 (use-package zenburn-theme
   :ensure t
   :defer t
