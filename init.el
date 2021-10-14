@@ -486,7 +486,6 @@
   :init (add-hook 'ibuffer-hook #'ibuffer-projectile-set-filter-groups))
 
 (use-package ido
-  :ensure t
   :init
   (setq ido-enable-prefix nil
         ido-enable-flex-matching t
@@ -497,6 +496,15 @@
         ido-max-prospects 10
         ido-use-virtual-buffers nil)
   (ido-mode 1)
+  (ido-everywhere 1)
+
+  (use-package ido-completing-read+
+    :ensure t
+    :init
+    (ido-ubiquitous-mode 1)
+    ;; racket-describe-search list can be more than the default 30,000 limit
+    ;; so bump this.
+    (setq ido-cr+-max-items 100000))
 
   (use-package flx-ido ;for better flex matching between words
     :ensure t
@@ -550,6 +558,7 @@
          ("C-c g l" . magit-log-buffer-file)
          ("C-c g p" . magit-pull))
   :config
+  (setq magit-completing-read-function #'magit-ido-completing-read)
   (add-hook 'git-commit-setup-hook #'git-commit-turn-on-flyspell)
   (add-to-list 'display-buffer-alist
                `(,(rx bos "*magit: ")
