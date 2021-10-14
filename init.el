@@ -20,7 +20,6 @@
 (defvar mswindows-p (string-match "windows" (symbol-name system-type)))
 (defvar macosx-p (string-match "darwin" (symbol-name system-type)))
 (defvar linux-p (and (not mswindows-p) (not macosx-p)))
-(defvar wsl-p (and linux-p (getenv "WSL") t))
 
 ;; Things to do early in startup, e.g. to avoid momentary display
 
@@ -905,52 +904,38 @@
   :config (bind-keys :map python-mode-map
                      ("C-m" . newline-and-indent)))
 
-(defvar gh/racket-mode-load-path
-  (if wsl-p
-      "/mnt/c/Users/greg/src/elisp/racket-mode"
-    "~/src/elisp/racket-mode"))
-
 (use-package racket-mode
-  :load-path gh/racket-mode-load-path
+  :load-path "~/src/elisp/racket-mode"
   :init
   (apply
    #'custom-set-faces
    `((racket-keyword-argument-face ((t (:foreground "IndianRed3"))))))
   :config
   (require 'racket-xp)
+  (require 'racket-cmd)
+  (require 'gv)
   (add-hook 'racket-mode-hook #'racket-xp-mode)
   (setq racket-repl-buffer-name-function
         #'racket-repl-buffer-name-project)
   (add-to-list 'racket-logger-config '(racket-mode . debug))
-  (cond (macosx-p
-         (setq racket-program
-               "/Applications/Racket_v6.10/bin/racket"
-               ;;"/Applications/Racket_v7.0/bin/racket"
-               ))
-        (wsl-p
-         ;; This config is actually for using Windows Subsystem for Linux
-         ;; to run _Windows_ Racket.exe on _Windows_ files outside the
-         ;; WSL file system.
-         ;;
-         ;; Otherwise, if Linux Racket is installed, could also run
-         ;; _that_ with the usual vanilla Linux setup.
-         (require 'racket-wsl)
-         ;; Assumes we have /mnt/c/Program Files/Racket-7.2 on WSL PATH.
-         ;; So all we need to do is specify "Racket.exe" not "racket".
-         (setq racket-program "Racket.exe")
-         ;; Then the path translation functions:
-         (setq racket-path-from-emacs-to-racket-function #'racket-wsl-to-windows)
-         (setq racket-path-from-racket-to-emacs-function #'racket-windows-to-wsl)
-         ;; Only because we're developing racket-mode and have the source code
-         ;; under /mnt/c, we also need this:
-         (setq racket-adjust-run-rkt #'racket-wsl-to-windows))
-        (linux-p
-         (setq racket-program "~/racket/8.0.0.12/bin/racket")
-         (setq racket-path-from-emacs-to-racket-function #'identity)
-         (setq racket-path-from-racket-to-emacs-function #'identity)
-         (setq racket-adjust-run-rkt #'identity))
-        (mswindows-p
-         (setq racket-program "C:\\Program Files\\Racket-7.2\\Racket.exe")))
+  (cond
+   (linux-p
+    (setq racket-program "~/src/racket-lang/racket/bin/racket")
+    (when (fboundp 'racket-add-back-end)
+      ;; For the multi-back-end branch
+      ;; 1. The automatic configuration for local files is fine.
+      ;; 2. Slightly tweak the configuration for "/linode:*"
+      ;; to use :racket-program "racket"
+      (racket-add-back-end "/ssh:linode:"
+                           :racket-program "racket")
+      ;; 3. Experiment using multi back ends on same host. Files under
+      ;; /var/tmp/8.0 will use a back end using Racket 8.9
+      (racket-add-back-end "/var/tmp/8.0"
+                           :racket-program "~/racket/8.0/bin/racket")))
+   (macosx-p
+    (setq racket-program "/Applications/Racket_v6.10/bin/racket"))
+   (mswindows-p
+    (setq racket-program "C:\\Program Files\\Racket-7.2\\Racket.exe")))
   (setq racket-error-context 'medium)  ; 'high
   (diminish 'hs-minor-mode)
   (unless terminal-frame
