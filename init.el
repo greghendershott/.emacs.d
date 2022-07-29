@@ -496,6 +496,7 @@
         ido-max-prospects 10
         ido-use-virtual-buffers nil)
   (ido-mode 1)
+  (unbind-key "SPC" ido-common-completion-map)
   (ido-everywhere 1)
 
   (use-package ido-completing-read+
@@ -922,7 +923,6 @@
   :config
   (require 'racket-xp)
   (require 'racket-cmd)
-  (require 'gv)
   (add-hook 'racket-mode-hook #'racket-xp-mode)
   (setq racket-repl-buffer-name-function
         #'racket-repl-buffer-name-project)
@@ -934,8 +934,8 @@
       ;; For the multi-back-end branch
       ;; 1. The automatic configuration for local files is fine.
       ;; 2. Slightly tweak the configuration for "/linode:*"
-      ;; to use :racket-program "racket"
-      (racket-add-back-end "/ssh:linode:"
+      ;; to use :racket-program "racket" instead of the default.
+      (racket-add-back-end "/linode:"
                            :racket-program "racket")
       ;; 3. Experiment using multi back ends on same host. Files under
       ;; /var/tmp/8.0 will use a back end using Racket 8.9

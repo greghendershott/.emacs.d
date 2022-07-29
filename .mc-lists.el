@@ -40,6 +40,7 @@
         paredit-wrap-square
         racket--paredit-open-square
         racket-cycle-paren-shapes
+        racket-insert-lambda
         transpose-sexps
         wdired-downcase-word
         ))
@@ -51,6 +52,7 @@
         cider-find-and-clear-repl-output
         cljr-slash
         insert-parentheses
+        paredit-close-round
         racket-unalign
         smex
         ))
