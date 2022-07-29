@@ -1032,19 +1032,6 @@
 (use-package uniquify
   :config (setq uniquify-buffer-name-style 'forward))
 
-(use-package visual-fill-column
-  ;; http://www.lunaryorn.com/posts/center-buffer-text-in-emacs.html
-  :disabled t
-  :ensure t
-  :defer t
-  :bind (("C-c t v" . visual-fill-column-mode))
-  :init (dolist (hook '(visual-line-mode-hook
-                        prog-mode-hook
-                        text-mode-hook))
-          (add-hook hook #'visual-fill-column-mode))
-  :config (setq-default visual-fill-column-center-text t
-                        visual-fill-column-fringes-outside-margins nil))
-
 (use-package which-key
   :ensure t
   :init (which-key-mode)
