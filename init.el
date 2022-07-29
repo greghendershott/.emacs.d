@@ -1356,13 +1356,15 @@ _S_: Light    _M_: Light   _N_: Light   _e_: Eink     _DEL_: none
 (setq linum-format "  %d ")
 
 (defun gh/goto-line-with-feedback ()
-  "Show line numbers temporarily, while prompting for the line number input."
   (interactive)
-  (unwind-protect
-      (progn
-        (linum-mode 1)
-        (goto-line (read-number "Goto line: ")))
-    (linum-mode -1)))
+  (let ((orig linum-mode))
+    (unwind-protect
+        (progn
+          (unless linum-mode
+            (linum-mode 1))
+          (goto-line (read-number "Goto line: ")))
+      (unless orig
+        (linum-mode -1)))))
 (bind-key [remap goto-line] #'gh/goto-line-with-feedback)
 
 (defun gh/isearch-yank-symbol ()
