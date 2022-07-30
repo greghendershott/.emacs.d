@@ -1355,6 +1355,7 @@ _S_: Light    _M_: Light   _N_: Light   _e_: Eink     _DEL_: none
 ;; "Fix" linum display problem on OS X
 (setq linum-format "  %d ")
 
+(require 'linum)
 (defun gh/goto-line-with-feedback ()
   (interactive)
   (let ((orig linum-mode))
