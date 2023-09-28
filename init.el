@@ -1139,6 +1139,9 @@
                 (size-indication-mode ("/ " (-4 "%I")))
                 " "
                 (line-number-mode ("%l" (column-number-mode ":%c")))
+                " "
+                (:propertize (:eval (format "%s" (point)))
+                             face (:slant italic))
                 ")"))
 
 (defconst gh/vc-mode-line
