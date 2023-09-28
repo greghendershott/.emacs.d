@@ -1,5 +1,11 @@
 ;;; init.el --- Emacs init file
 
+;; Instead of the default ~/.emacs.d/elpa, store package files outside
+;; ~/.emacs. For one thing, I consider it "cache" not "config". For another
+;; thing, this might help with issues like
+;; https://github.com/greghendershott/racket-mode/issues/654.
+(setq package-user-dir "~/emacs-packages")
+
 ;; `load-prefer-newer': This is nil by default -- Emacs always prefers .elc,
 ;; even when .el is newer. Instead, I want to load .el when newer than .elc.
 ;; This helps when e.g. I'm working on Racket Mode. It means I'll never get
