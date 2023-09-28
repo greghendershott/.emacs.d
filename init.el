@@ -867,7 +867,11 @@
   (unless terminal-frame
     (bind-keys :map paredit-mode-map
                ("M-[" . paredit-wrap-square)
-               ("M-{" . paredit-wrap-curly))))
+               ("M-{" . paredit-wrap-curly)))
+  ;; Newer versions of paredit bind these, but that's bad in interactive modes
+  ;; like racket-repl-mode.
+  (dolist (k '("RET" "C-m" "C-j"))
+    (define-key paredit-mode-map (kbd k) nil)))
 
 (use-package paren-face
   :ensure t
