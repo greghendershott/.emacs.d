@@ -926,14 +926,33 @@
 
 (use-package racket-mode
   :load-path "~/src/elisp/racket-mode"
-  :init
-  (apply
-   #'custom-set-faces
-   `((racket-keyword-argument-face ((t (:foreground "IndianRed3"))))))
+  :custom-face '(racket-keyword-argument-face ((t (:foreground "IndianRed3"))))
   :config
-  (require 'racket-xp)
+  ;; Use racket-pdb-mode when available (on the "pdb" branch) else
+  ;; racket-xp-mode.
+  (if (require 'racket-pdb "racket-pdb.el" t)
+      (progn
+        (add-hook 'racket-mode-hook #'racket-pdb-mode)
+        (bind-keys :map racket-pdb-mode-map
+                   ("M-n" . racket-pdb-next-use)
+                   ("M-p" . racket-pdb-previous-use)))
+    (require 'racket-xp)
+    (add-hook 'racket-mode-hook #'racket-xp-mode))
+  (require 'racket-hash-lang)
+  (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-hash-lang-mode))
+  (add-to-list 'auto-mode-alist '("\\.scrbl\\'" . racket-hash-lang-mode))
+  (add-to-list 'auto-mode-alist '("\\.rhm\\'" . racket-hash-lang-mode))
+  (defun gh/racket-hash-lang-choose-paredit-or-electric-pairs (mod-lang)
+    (cl-case mod-lang
+      ((scribble/manual scribble/doc rhombus)
+       (paredit-mode -1)
+       (electric-pair-local-mode 1))
+      (otherwise
+       (paredit-mode 1)
+       (electric-pair-local-mode -1))))
+  (add-hook 'racket-hash-lang-module-language-hook
+            #'gh/racket-hash-lang-choose-paredit-or-electric-pairs)
   (require 'racket-cmd)
-  (add-hook 'racket-mode-hook #'racket-xp-mode)
   (setq racket-repl-buffer-name-function
         #'racket-repl-buffer-name-project)
   (add-to-list 'racket-logger-config '(racket-mode . debug))
@@ -961,10 +980,6 @@
     (bind-keys :map racket-mode-map
                ("M-]" . racket-align)
                ("M-}" . racket-unalign))))
-
-(use-package scribble-mode
-  :ensure t
-  :defer t)
 
 (use-package rainbow-delimiters
   :ensure t)
