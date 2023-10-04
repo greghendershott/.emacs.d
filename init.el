@@ -1,10 +1,16 @@
 ;;; init.el --- Emacs init file
 
+;; OS
+(defvar mswindows-p (string-match "windows" (symbol-name system-type)))
+(defvar macosx-p (string-match "darwin" (symbol-name system-type)))
+(defvar linux-p (and (not mswindows-p) (not macosx-p)))
+
 ;; Instead of the default ~/.emacs.d/elpa, store package files outside
 ;; ~/.emacs. For one thing, I consider it "cache" not "config". For another
 ;; thing, this might help with issues like
 ;; https://github.com/greghendershott/racket-mode/issues/654.
-(setq package-user-dir "~/emacs-packages")
+(when linux-p
+  (setq package-user-dir "~/emacs-packages"))
 
 ;; `load-prefer-newer': This is nil by default -- Emacs always prefers .elc,
 ;; even when .el is newer. Instead, I want to load .el when newer than .elc.
@@ -21,11 +27,6 @@
 
 (eval-when-compile
   (require 'cl))
-
-;; OS
-(defvar mswindows-p (string-match "windows" (symbol-name system-type)))
-(defvar macosx-p (string-match "darwin" (symbol-name system-type)))
-(defvar linux-p (and (not mswindows-p) (not macosx-p)))
 
 ;; Things to do early in startup, e.g. to avoid momentary display
 
