@@ -194,8 +194,12 @@
 (setq package-archives '(("elpa" .  "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
-(unless (package-installed-p 'use-package)
-  (message "use-package not installed. Trying to install")
+
+;; In newer Emacs use-package is built in. So don't use `package-installed-p'
+;; here. Instead `require` with noerror, and check if that worked.
+(require 'use-package nil t)
+(unless (memq 'use-package features)
+  (message "use-package not built in or installed; trying to install")
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
