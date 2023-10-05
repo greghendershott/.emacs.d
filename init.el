@@ -26,7 +26,7 @@
 (setq load-prefer-newer t)
 
 (eval-when-compile
-  (require 'cl))
+  (require 'cl-macs))
 
 ;; Things to do early in startup, e.g. to avoid momentary display
 
@@ -42,7 +42,7 @@
                       ns-auto-hide-menu-bar t))
       ((boundp 'menu-bar-mode) (menu-bar-mode -1)))
 
-(case window-system
+(cl-case window-system
   (x (set-frame-font "IBM Plex Mono 12")))
 
 (setq text-scale-mode-step 1.1)         ;finer inc/dec than default 1.2
@@ -593,12 +593,12 @@
   (defun gh/material-theme-hook ()
     (set-face-attribute 'which-key-key-face nil :foreground
                         (face-attribute 'error :foreground))
-    (loop for n from 1 to 8
-          do (set-face-attribute (intern-soft (format "org-level-%s" n))
-                                 nil
-                                 :height     'unspecified
-                                 :background 'unspecified
-                                 :box        'unspecified)))
+    (cl-loop for n from 1 to 8
+             do (set-face-attribute (intern-soft (format "org-level-%s" n))
+                                    nil
+                                    :height     'unspecified
+                                    :background 'unspecified
+                                    :box        'unspecified)))
   (gh/add-theme-hook 'material       #'gh/material-theme-hook)
   (gh/add-theme-hook 'material-light #'gh/material-theme-hook))
 
@@ -1318,7 +1318,7 @@
 (defun gh/move-splitter (dir arg)
   (pcase-let
       ((`(,enlarge . ,shrink)
-        (case dir
+        (cl-case dir
           ((left right) (cons #'enlarge-window-horizontally
                               #'shrink-window-horizontally))
           ((up   down)  (cons #'enlarge-window
