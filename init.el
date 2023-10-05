@@ -1385,20 +1385,25 @@ _S_: Light    _M_: Light   _N_: Light   _e_: Eink     _DEL_: none
 
 (bind-keys :map org-mode-map ("C-," . gh/prev-window))
 
-;; "Fix" linum display problem on OS X
-(setq linum-format "  %d ")
-
-(require 'linum)
+(require 'display-line-numbers nil t) ;Emacs 29.1+
+(unless (memq 'display-line-numbers features)
+  (require 'linum))
 (defun gh/goto-line-with-feedback ()
+  "Like `goto-line' but show line numbers temporarily if not already shown.
+
+Use `display-line-numbers-mode' in Emacs 29.1+, else `linum-mode'."
   (interactive)
-  (let ((orig linum-mode))
+  (let ((mode-var (if (boundp 'display-line-numbers-mode)
+                      display-line-numbers-mode linum-mode))
+        (mode-proc (if (fboundp 'display-line-numbers-mode)
+                       #'display-line-numbers-mode #'linum-mode)))
     (unwind-protect
         (progn
-          (unless linum-mode
-            (linum-mode 1))
+          (unless mode-var
+            (funcall mode-proc 1))
           (goto-line (read-number "Goto line: ")))
-      (unless orig
-        (linum-mode -1)))))
+      (unless mode-var
+        (funcall mode-proc -1)))))
 (bind-key [remap goto-line] #'gh/goto-line-with-feedback)
 
 (defun gh/isearch-yank-symbol ()
