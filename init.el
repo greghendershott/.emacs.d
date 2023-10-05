@@ -895,13 +895,14 @@
 
 (use-package projectile
   :ensure t
-  :bind (:map projectile-command-map
-              ("t" . gh/neotree-project-root)
-              ("T" . projectile-toggle-between-implementation-and-test)
-              ("s g" . deadgrep)
-              ("s G" . projectile-grep))
-  :init (projectile-global-mode)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  :bind
+  (("C-c p" . projectile-command-map)
+   :map projectile-command-map
+   ("t" . gh/neotree-project-root)
+   ("T" . projectile-toggle-between-implementation-and-test)
+   ("s g" . deadgrep)
+   ("s G" . projectile-grep))
+  :hook (prog-mode text-mode special-mode)
   :config
   ;; Remove dead projects when Emacs is idle
   (run-with-idle-timer 10 nil #'projectile-cleanup-known-projects)
