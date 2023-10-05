@@ -933,7 +933,8 @@
 
 (use-package racket-mode
   :load-path "~/src/elisp/racket-mode"
-  :custom-face '(racket-keyword-argument-face ((t (:foreground "IndianRed3"))))
+  :custom-face
+  (racket-keyword-argument-face ((t (:foreground "IndianRed3"))))
   :config
   ;; Use racket-pdb-mode when available (on the "pdb" branch) else
   ;; racket-xp-mode.
