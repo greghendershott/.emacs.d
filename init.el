@@ -1066,7 +1066,7 @@
 
 (use-package which-key
   :ensure t
-  :init (which-key-mode)
+  :hook (prog-mode text-mode special-mode)
   :config
   (setq which-key-idle-delay 0.4
         which-key-sort-order 'which-key-prefix-then-key-order
@@ -1087,7 +1087,7 @@
           ("/body\\'"       . " |=")
           ;; Drop my personal prefix
           ("\\`gh/"  . "")))
-  (which-key-declare-prefixes
+  (which-key-add-key-based-replacements
     "C-c a" "applications"
     "C-c b" "buffers"
     "C-c c" "cursors"
@@ -1106,7 +1106,7 @@
     "C-c w" "windows/frames"
     "C-c x" "xrefs")
 
-  (which-key-declare-prefixes-for-mode 'markdown-mode
+  (which-key-add-major-mode-key-based-replacements 'markdown-mode
     "C-c TAB" "markdown/images"
     "C-c C-a" "markdown/links"
     "C-c C-c" "markdown/process"
