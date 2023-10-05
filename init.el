@@ -979,7 +979,7 @@
       (racket-add-back-end "/var/tmp/8.0"
                            :racket-program "~/racket/8.0/bin/racket")))
    (macosx-p
-    (setq racket-program "/Applications/Racket_v6.10/bin/racket"))
+    (setq racket-program "/Applications/Racket_v8.10/bin/racket"))
    (mswindows-p
     (setq racket-program "C:\\Program Files\\Racket-7.2\\Racket.exe")))
   (setq racket-error-context 'medium)  ; 'high
