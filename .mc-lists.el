@@ -12,6 +12,7 @@
         kill-region
         kill-sexp
         org-beginning-of-line
+        org-ctrl-c-ctrl-c
         org-delete-char
         org-end-of-line
         org-force-self-insert

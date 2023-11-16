@@ -1,16 +1,9 @@
-;;; init.el --- Emacs init file
+;;; init.el --- Emacs init file  -*- lexical-binding: t; -*-
 
 ;; OS
 (defvar mswindows-p (string-match "windows" (symbol-name system-type)))
 (defvar macosx-p (string-match "darwin" (symbol-name system-type)))
 (defvar linux-p (and (not mswindows-p) (not macosx-p)))
-
-;; Instead of the default ~/.emacs.d/elpa, store package files outside
-;; ~/.emacs. For one thing, I consider it "cache" not "config". For another
-;; thing, this might help with issues like
-;; https://github.com/greghendershott/racket-mode/issues/654.
-(when linux-p
-  (setq package-user-dir "~/emacs-packages"))
 
 ;; `load-prefer-newer': This is nil by default -- Emacs always prefers .elc,
 ;; even when .el is newer. Instead, I want to load .el when newer than .elc.
@@ -43,7 +36,7 @@
       ((boundp 'menu-bar-mode) (menu-bar-mode -1)))
 
 (cl-case window-system
-  (x (set-frame-font "IBM Plex Mono 12")))
+  (x (set-frame-font "IBM Plex Mono 12" nil t)))
 
 (setq text-scale-mode-step 1.1)         ;finer inc/dec than default 1.2
 
@@ -61,7 +54,7 @@
 ;; I seem to be hitting this accidentally and I never use fill-prefix.
 (global-unset-key (kbd "C-x ."))
 
-(when mswindows-p
+`(when mswindows-p
   (setq w32-pass-lwindow-to-system nil)
   (setq w32-lwindow-modifier 'meta)
   (w32-register-hot-key [M-])
@@ -71,7 +64,11 @@
 ;; name lets a window manager do things assign to a specific workspace -- e.g.
 ;; one workspace for Emacs programming, and another for Emacs mail/org-mode.
 (when linux-p
-  (make-frame '((name . "Emacs Mail/Org"))))
+  (let ((orig (selected-frame)))
+    (make-frame '((name . "Emacs Mail/Org")
+                  (fullscreen . maximized)))
+    (run-with-timer 2 nil
+                    #'select-frame-set-input-focus orig)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Theme hooks
@@ -121,6 +118,7 @@
 (add-hook 'emacs-lisp-mode-hook         ;but Emacs' Elisp wants 8 for alignment
           (lambda () (setq tab-width 8)))
 (setq tab-always-indent 'complete)
+(setq completion-cycle-threshold nil)
 (setq echo-keystrokes 0.1)              ;show keys immediately
 (setq scroll-down-aggressively 0.1)
 (setq scroll-up-aggressively 0.1)
@@ -218,22 +216,6 @@
 ;; Use `use-package' for built-in packages, too -- :load-path instead of
 ;; :ensure
 
-(use-package ace-window
-  :ensure t
-  :defer t
-  ;; Why bind to C-x 9? (a) Some other common window cmds are C-x <number>,
-  ;; and this is next to C-x o (b) The "9" is right middle finger (c) The left
-  ;; hand can tap the window key.
-  :bind (("C-x 9" . ace-window))
-  ;; Use home-row letters instead of the default numbers
-  :config
-  (require 'avy)
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  (setq aw-dispatch-always t)
-  (setq aw-background t)
-  (put 'aw-leading-char-face 'face-alias 'avy-lead-face)
-  (put 'aw-background-face 'face-alias 'avy-background-face))
-
 (use-package all-the-icons
   :ensure t
   :config
@@ -276,34 +258,21 @@
   ;; For new/active appointments and events, using calendar.org.
   :config (setq diary-file "~/Documents/diary"))
 
-(use-package cider
-  :ensure t
-  :defer t
-  :config (setq cider-cljs-lein-repl
-                "(do (require 'figwheel-sidecar.repl-api)
-                     (figwheel-sidecar.repl-api/start-figwheel!)
-                     (figwheel-sidecar.repl-api/cljs-repl))"))
+;; (use-package company
+;;   :ensure t
+;;   :defer t
+;;   :diminish company-mode
+;;   ;; The following for testing racket-mode/issues/318
+;;   :config
+;;   (setq company-idle-delay 0.1
+;;         company-minimum-prefix-length 2
+;;         company-tooltip-align-annotations t
+;;         company-show-numbers t
+;;         company-require-match nil))
 
-(use-package clojure-mode
-  :ensure t
-  :defer t
-  :config (put-clojure-indent 'match 1))
-
-(use-package company
-  :ensure t
-  :defer t
-  :diminish company-mode
-  ;; The following for testing racket-mode/issues/318
-  :config
-  (setq company-idle-delay 0.1
-        company-minimum-prefix-length 2
-        company-tooltip-align-annotations t
-        company-show-numbers t
-        company-require-match nil))
-
-(use-package company-quickhelp
-  :ensure t
-  :defer t)
+;; (use-package company-quickhelp
+;;   :ensure t
+;;   :after company)
 
 (use-package compilation-mode
   ;; built-in
@@ -429,9 +398,9 @@
   :ensure t
   :defer t)
 
-(use-package forge
-  :ensure t
-  :after magit)
+;; (use-package forge
+;;   :ensure t
+;;   :after magit)
 
 (use-package frame
   :bind (("C-c w F" . toggle-frame-fullscreen))
@@ -467,6 +436,10 @@
          ("C-h v" . helpful-variable)
          ("C-h k" . helpful-key)))
 
+(use-package highlight-indent-guides
+  :ensure t
+  :defer t)
+
 (use-package highlight-parentheses
   :ensure t
   :defer t)
@@ -494,52 +467,50 @@
   :ensure t
   :init (add-hook 'ibuffer-hook #'ibuffer-projectile-set-filter-groups))
 
-(use-package ido
+;; See `marginalia' for completion matching styles configuration.
+(use-package vertico
+  :ensure t
+  :init (vertico-mode))
+
+(use-package savehist
+  :init (savehist-mode))
+
+;; I want `flex' style completion with `vertico' for files, buffers, commands,
+;; and more. However for completion-at-point I want 'basic' style. [I'm very
+;; used to typing a prefix and hitting TAB, maybe typing more to narrow it
+;; down and TAB-ing again. I'm fine even with the boring old *Completions*
+;; buffer, don't particularly need/want something like company or corfu.]
+;;
+;; The Emacs completion machinery seems to lack any way to specify a style to
+;; use when no category metadata is specified.
+;;
+;; Many (most?) CAPFs don't supply a category! Argh.
+;;
+;; So we use `maginalia' for its ability to add category metadata in many more
+;; cases, by advising `completion-metadata-get'. See
+;; `marginalia-annotator-registry' and `marginalia-classifiers'.
+;;
+;; (At the moment I don't care about the annotations it displays. In fact so
+;; far they seem mostly noise. If it turns out I really don't want that, maybe
+;; here I could adivse `completion-metadata-get' myself, borrowing the private
+;; `marginalia' functions, without enabling `marginalia-mode' at all.)
+(use-package marginalia
+  :ensure t
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
   :init
-  (setq ido-enable-prefix nil
-        ido-enable-flex-matching t
-        ido-case-fold nil
-        ido-auto-merge-work-directories-length -1
-        ido-create-new-buffer 'always
-        ido-use-filename-at-point nil
-        ido-max-prospects 10
-        ido-use-virtual-buffers nil)
-  (ido-mode 1)
-  (unbind-key "SPC" ido-common-completion-map)
-  (ido-everywhere 1)
-
-  (use-package ido-completing-read+
-    :ensure t
-    :init
-    (ido-ubiquitous-mode 1)
-    ;; racket-describe-search list can be more than the default 30,000 limit
-    ;; so bump this.
-    (setq ido-cr+-max-items 100000))
-
-  (use-package flx-ido ;for better flex matching between words
-    :ensure t
-    :init
-    (setq ido-use-faces nil) ;disable ido faces to see flx highlights.
-    (flx-ido-mode 1))
-
-  (use-package ido-vertical-mode ;flx-ido looks better vertically
-    :ensure t
-    :init
-    (add-hook 'ido-setup-hook
-              (lambda ()
-                (bind-keys :map ido-completion-map
-                           ("C-n"    . ido-next-match)
-                           ("<down>" . ido-next-match)
-                           ("C-p"    . ido-prev-match)
-                           ("<up>"   . ido-prev-match))))
-    (ido-vertical-mode 1))
-
-  (use-package idomenu
-    :ensure t
-    :bind (("C-c i"   . idomenu))
-    :init
-    (autoload 'idomenu "idomenu" nil t) ;do I really need this?
-    (add-hook 'emacs-lisp-mode #'gh/emacs-lisp-mode-imenu-hook)))
+  (marginalia-mode)
+  ;; Default the completion style to `flex' (with `basic' as a backup), only
+  ;; because there are many more categories where we prefer that.
+  (setq completion-styles '(flex basic))
+  ;; Then override the style for the `file' category, plus various programming
+  ;; styles where I want that in the minibuffer and especially for
+  ;; `completion-at-point'.
+  (setq ;;completion-category-defaults nil
+        completion-category-overrides `((file (styles partial-completion))
+                                        (symbol (styles basic))
+                                        (variable (styles basic))
+                                        (function (styles basic)))))
 
 (use-package interaction-log
   :defer t
@@ -569,6 +540,7 @@
          ("C-c g p" . magit-pull))
   :config
   (setq magit-completing-read-function #'magit-ido-completing-read)
+  (setq magit-diff-use-overlays nil)
   (add-hook 'git-commit-setup-hook #'git-commit-turn-on-flyspell)
   (add-to-list 'display-buffer-alist
                `(,(rx bos "*magit: ")
@@ -605,14 +577,13 @@
 
 (when linux-p
   (use-package mu4e
-    :load-path "/usr/share/emacs/site-lisp/mu4e"
+    :load-path "/usr/share/emacs/site-lisp/elpa/mu4e-1.8.14/"
     :config
     (bind-key "C-c a m" #'mu4e)
-    (require 'org-mu4e)
     (bind-keys :map mu4e-headers-mode-map
-               ("C-c C-c" . org-mu4e-store-and-capture))
+               ("C-c C-c" . mu4e-org-store-and-capture))
     (bind-keys :map mu4e-view-mode-map
-               ("C-c C-c" . org-mu4e-store-and-capture))
+               ("C-c C-c" . mu4e-org-store-and-capture))
 
     (setq mail-user-agent 'mu4e-user-agent)
 
@@ -637,33 +608,6 @@
             ("/archive"     . ?a)))
 
     (setq mu4e-get-mail-command "mbsync greg")
-
-    (setq mu4e-bookmarks
-          (list
-           (make-mu4e-bookmark
-            :name "Unread"
-            :query "flag:unread AND NOT flag:trashed AND NOT maildir:/greg/trash AND NOT maildir:/greg/spam"
-            :key ?u)
-           (make-mu4e-bookmark ;Not just /greg//sent folder, also includes /archive
-            :name "Sent"
-            :query "from:greghendershott@gmail.com OR from:mail@greghendershott.com AND NOT flag:trashed AND NOT maildir:/greg/trash"
-            :key ?s)
-           (make-mu4e-bookmark
-            :name "Last week"
-            :query "date:7d..now"
-            :key ?w)
-           (make-mu4e-bookmark
-            :name "Pictures"
-            :query "mime:image/*"
-            :key ?p)
-           (make-mu4e-bookmark
-            :name "Racket Users"
-            :query "list:racket-users.googlegroups.com OR to:racket-users@googlegroups.com OR cc:racket-users@googlegroups.com  OR users.racket-lang.org OR to:users@lists.racket-lang.org OR list:plt-scheme.list.cs.brown.edu"
-            :key ?r)
-           (make-mu4e-bookmark
-            :name "Racket Dev"
-            :query "list:racket-dev.googlegroups.com OR to:racket-dev@googlegroups.com OR cc:racket-dev@googlegroups.com  OR list:dev.racket-lang.org OR to:dev@lists.racket-lang.org OR cc:dev@lists.racket-lang.org"
-            :key ?R)))
 
     ;;; Sending
     (require 'smtpmail)
@@ -697,6 +641,12 @@
 
     (add-hook 'mu4e-view-mode-hook 'visual-line-mode)
 
+    ;; https://github.com/djcb/mu/issues/2337
+    (with-eval-after-load "mm-decode"
+      (add-to-list 'mm-discouraged-alternatives "text/html")
+      (add-to-list 'mm-discouraged-alternatives "text/richtext")
+      (add-to-list 'mm-discouraged-alternatives "multipart/related"))
+
     ;; rice
     (setq mu4e-view-show-addresses t)
     (setq mu4e-use-fancy-chars nil)
@@ -705,8 +655,6 @@
                                  ;(:mailing-list   .   11)
                                  (:from           .   16)
                                  (:thread-subject .   nil)))
-    ;; Really, REALLY prefer text over html format.
-    (setq mu4e-view-html-plaintext-ratio-heuristic most-positive-fixnum)
     ;; TODO: Add this to make it apparent to whom the email was sent,
     ;; e.g. info@greghendershott.com spam.
     ;;
@@ -774,22 +722,20 @@
         neo-persist-show nil
         neo-show-hidden-files t
         neo-auto-indent-point nil)
-  (apply
-   #'custom-set-faces
-   `((neo-file-link-face ((t (:inherit default))))
-     (neo-dir-link-face ((t (:inherit dired-directory)))))))
+  :custom-face
+  (neo-file-link-face ((t (:inherit default))))
+  (neo-dir-link-face ((t (:inherit dired-directory)))))
 
 (use-package nxml-mode
-  :init (apply
-         #'custom-set-faces
-         `(;; De-emphasize the tag, emphasize the data
-           (nxml-name                 ((t (:foreground "wheat3"))))
-           (nxml-ref                  ((t (:foreground "wheat3"))))
-           (nxml-element-prefix       ((t (:foreground "wheat3"))))
-           (nxml-element-local-name   ((t (:foreground "wheat3"))))
-           (nxml-attribute-prefix     ((t (:foreground "wheat3" :slant italic))))
-           (nxml-attribute-local-name ((t (:foreground "wheat3" :slant italic))))
-           (nxml-delimiter            ((t (:foreground "wheat3")))))))
+  :custom-face
+  ;; De-emphasize the tag, emphasize the data
+  (nxml-name                 ((t (:foreground "wheat3"))))
+  (nxml-ref                  ((t (:foreground "wheat3"))))
+  (nxml-element-prefix       ((t (:foreground "wheat3"))))
+  (nxml-element-local-name   ((t (:foreground "wheat3"))))
+  (nxml-attribute-prefix     ((t (:foreground "wheat3" :slant italic))))
+  (nxml-attribute-local-name ((t (:foreground "wheat3" :slant italic))))
+  (nxml-delimiter            ((t (:foreground "wheat3")))))
 
 (use-package org
   :mode (("\\.org\\'" . org-mode))
@@ -893,13 +839,14 @@
 (use-package projectile
   :ensure t
   :bind
-  (("C-c p" . projectile-command-map)
-   :map projectile-command-map
-   ("t" . gh/neotree-project-root)
-   ("T" . projectile-toggle-between-implementation-and-test)
-   ("s g" . deadgrep)
-   ("s G" . projectile-grep))
-  :hook (prog-mode text-mode special-mode)
+  (:map projectile-command-map
+        ("t" . gh/neotree-project-root)
+        ("T" . projectile-toggle-between-implementation-and-test)
+        ("s g" . deadgrep)
+        ("s G" . projectile-grep))
+  :init
+  (projectile-global-mode)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   :config
   ;; Remove dead projects when Emacs is idle
   (run-with-idle-timer 10 nil #'projectile-cleanup-known-projects)
@@ -938,23 +885,17 @@
   (if (require 'racket-pdb "racket-pdb.el" t)
       (progn
         (add-hook 'racket-mode-hook #'racket-pdb-mode)
+        (add-hook 'racket-hash-lang-mode-hook #'racket-pdb-mode)
         (bind-keys :map racket-pdb-mode-map
                    ("M-n" . racket-pdb-next-use)
                    ("M-p" . racket-pdb-previous-use)))
     (require 'racket-xp)
-    (add-hook 'racket-mode-hook #'racket-xp-mode))
+    (add-hook 'racket-mode-hook #'racket-xp-mode)
+    (add-hook 'racket-hash-lang-mode-hook #'racket-xp-mode))
   (require 'racket-hash-lang)
-  (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-hash-lang-mode))
+  ;;(add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-hash-lang-mode))
   (add-to-list 'auto-mode-alist '("\\.scrbl\\'" . racket-hash-lang-mode))
   (add-to-list 'auto-mode-alist '("\\.rhm\\'" . racket-hash-lang-mode))
-  (defun gh/racket-hash-lang-choose-paredit-or-electric-pairs (mod-lang)
-    (cl-case mod-lang
-      ((scribble/manual scribble/doc rhombus)
-       (paredit-mode -1)
-       (electric-pair-local-mode 1))
-      (otherwise
-       (paredit-mode 1)
-       (electric-pair-local-mode -1))))
   (add-hook 'racket-hash-lang-module-language-hook
             #'gh/racket-hash-lang-choose-paredit-or-electric-pairs)
   (require 'racket-cmd)
@@ -980,11 +921,21 @@
    (mswindows-p
     (setq racket-program "C:\\Program Files\\Racket-7.2\\Racket.exe")))
   (setq racket-error-context 'medium)  ; 'high
-  (diminish 'hs-minor-mode)
   (unless terminal-frame
     (bind-keys :map racket-mode-map
                ("M-]" . racket-align)
                ("M-}" . racket-unalign))))
+
+(defun gh/racket-hash-lang-choose-paredit-or-electric-pairs (mod-lang)
+  ;;;(message "%S" (list 'gh/racket-hash-lang-choose-paredit-or-electric-pairs mod-lang))
+  (cond
+   ((member mod-lang (list "racket" "racket/base"
+                           "typed/racket" "typed/racket/base"))
+    (electric-pair-local-mode -1)
+    (paredit-mode 1))
+   (t
+    (paredit-mode -1)
+    (electric-pair-local-mode 1))))
 
 (use-package rainbow-delimiters
   :ensure t)
@@ -1016,11 +967,11 @@
   :defer
   :config (setq reb-re-syntax 'rx)) ;I love using rx for regexps
 
-(use-package smex
-  :ensure t
-  :bind (("M-x"   . smex)
-         ("M-X"   . smex-major-mode-commands)
-         ("C-x m" . smex)))
+;; (use-package smex
+;;   :ensure t
+;;   :bind (("M-x"   . smex)
+;;          ("M-X"   . smex-major-mode-commands)
+;;          ("C-x m" . smex)))
 
 (use-package solarized
   :ensure solarized-theme
@@ -1064,7 +1015,8 @@
 
 (use-package which-key
   :ensure t
-  :hook (prog-mode text-mode special-mode)
+  :init (dolist (hook '(prog-mode-hook text-mode-hook special-mode-hook))
+          (add-hook hook #'which-key-mode))
   :config
   (setq which-key-idle-delay 0.4
         which-key-sort-order 'which-key-prefix-then-key-order

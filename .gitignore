@@ -4,6 +4,7 @@
 
 auto-save-list/
 elpa/
+eln-cache/
 eshell/
 forge-database.sqlite
 imagedired/
@@ -15,6 +16,7 @@ url/
 
 bookmarks
 custom.el
+history
 ido.last
 network-security.data
 places
