@@ -935,7 +935,12 @@
     (paredit-mode 1))
    (t
     (paredit-mode -1)
-    (electric-pair-local-mode 1))))
+    (electric-pair-local-mode 1)
+    ;; #'electric-pair-default-inhibit tries to preserve balance but seems to
+    ;; get confused about things like quote-matches in racket-hash-lang-mode.
+    ;; For now, suggest this hack.
+    (setq-local electric-pair-inhibit-predicate
+                #'electric-pair-conservative-inhibit))))
 
 (use-package rainbow-delimiters
   :ensure t)
