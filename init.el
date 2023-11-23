@@ -462,10 +462,10 @@
     ("SPC" nil)
     ("RET" nil)))
 
-(use-package ibuffer-projectile
-  :defer t
-  :ensure t
-  :init (add-hook 'ibuffer-hook #'ibuffer-projectile-set-filter-groups))
+;; (use-package ibuffer-projectile
+;;   :defer t
+;;   :ensure t
+;;   :init (add-hook 'ibuffer-hook #'ibuffer-projectile-set-filter-groups))
 
 ;; See `marginalia' for completion matching styles configuration.
 (use-package vertico
@@ -844,39 +844,39 @@
   (add-to-list 'paren-face-modes 'racket-repl-mode)
   (global-paren-face-mode))
 
-(use-package projectile
-  :ensure t
-  :bind
-  (:map projectile-command-map
-        ("t" . gh/neotree-project-root)
-        ("T" . projectile-toggle-between-implementation-and-test)
-        ("s g" . deadgrep)
-        ("s G" . projectile-grep))
+(use-package project
+  :bind-keymap ("C-c p" . project-prefix-map)
+  :bind (:map project-prefix-map
+              ("t" . gh/toggle-neotree-for-project)
+              ("g" . deadgrep))
   :init
-  (projectile-global-mode)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  :config
-  ;; Remove dead projects when Emacs is idle
-  (run-with-idle-timer 10 nil #'projectile-cleanup-known-projects)
+  (remove-hook 'project-find-functions #'project-try-vc)
+  (add-hook 'project-find-functions #'gh/find-project)
+  ;; Ignore Racket bytecode dirs. Another option is to add globs to
+  ;; `grep-find-ignored-files'.
+  (add-to-list 'vc-directory-exclusion-list "compiled"))
 
-  (setq projectile-find-dir-includes-top-level t)
+(defun gh/project-root (dir)
+  "Find project dominating DIR, if any."
+  (when-let ((dir (or (locate-dominating-file dir ".git")
+                      (locate-dominating-file dir ".projectile"))))
+    (file-name-directory (expand-file-name dir))))
 
-  ;; Ignore Racket bytecode dirs
-  (add-to-list 'projectile-globally-ignored-directories "compiled")
+(defun gh/find-project (dir)
+  "Create a transient project dominating DIR."
+  (when-let ((root (gh/project-root dir)))
+    (cons 'transient root)))
 
-  (projectile-register-project-type 'racket '("info.rkt")
-                                    :compile "make setup"
-                                    :test "make test")
-
-  (defun gh/neotree-project-root (&optional directory)
-    "Open a NeoTree browser for a project DIRECTORY."
-    (interactive)
-    (let ((default-directory (or directory default-directory)))
-      (if (and (fboundp 'neo-global--window-exists-p)
-               (neo-global--window-exists-p))
-          (neotree-hide)
-        (neotree-find (projectile-project-root)))))
-  :diminish projectile-mode)
+(defun gh/toggle-neotree-for-project (&optional directory)
+  "Toggle a NeoTree browser for root of project containing DIRECTORY."
+  (interactive)
+  (if (and (fboundp 'neo-global--window-exists-p)
+           (neo-global--window-exists-p))
+      (neotree-hide)
+    (let ((dir (or directory default-directory)))
+      (if-let (root (gh/project-root dir))
+          (neotree-find root)
+        (user-error "can't find project root for %S" dir)))))
 
 (use-package python
   :defer t
