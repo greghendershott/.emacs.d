@@ -23,6 +23,7 @@
         paredit-backward-down
         paredit-backward-kill-word
         paredit-backward-up
+        paredit-delete-char
         paredit-forward
         paredit-forward-barf-sexp
         paredit-forward-delete
