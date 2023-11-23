@@ -478,8 +478,7 @@
 ;; I want `flex' style completion with `vertico' for files, buffers, commands,
 ;; and more. However for completion-at-point I want 'basic' style. [I'm very
 ;; used to typing a prefix and hitting TAB, maybe typing more to narrow it
-;; down and TAB-ing again. I'm fine even with the boring old *Completions*
-;; buffer, don't particularly need/want something like company or corfu.]
+;; down and TAB-ing again.]
 ;;
 ;; The Emacs completion machinery seems to lack any way to specify a style to
 ;; use when no category metadata is specified.
@@ -502,7 +501,7 @@
   (marginalia-mode)
   ;; Default the completion style to `flex' (with `basic' as a backup), only
   ;; because there are many more categories where we prefer that.
-  (setq completion-styles '(flex basic))
+  (setq completion-styles '(flex initials basic))
   ;; Then override the style for the `file' category, plus various programming
   ;; styles where I want that in the minibuffer and especially for
   ;; `completion-at-point'.
@@ -510,7 +509,16 @@
         completion-category-overrides `((file (styles partial-completion))
                                         (symbol (styles basic))
                                         (variable (styles basic))
-                                        (function (styles basic)))))
+                                        (function (styles basic))))
+  ;; Ignore case for completions.
+  (setq completion-ignore-case t)
+  (setq read-file-name-completion-ignore-case t)
+  (setq read-buffer-completion-ignore-case t))
+
+(use-package corfu
+  :ensure t
+  :init
+  (global-corfu-mode))
 
 (use-package interaction-log
   :defer t
