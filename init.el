@@ -844,6 +844,10 @@
   :bind (:map project-prefix-map
               ("t" . gh/toggle-neotree-for-project)
               ("g" . deadgrep))
+  :custom
+  (project-switch-use-entire-map nil)
+  (project-switch-commands '((project-find-file "Find file")
+                             (deadgrep "deadgrep")))
   :init
   (remove-hook 'project-find-functions #'project-try-vc)
   (add-hook 'project-find-functions #'gh/find-project)
