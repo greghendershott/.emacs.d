@@ -462,11 +462,6 @@
     ("SPC" nil)
     ("RET" nil)))
 
-;; (use-package ibuffer-projectile
-;;   :defer t
-;;   :ensure t
-;;   :init (add-hook 'ibuffer-hook #'ibuffer-projectile-set-filter-groups))
-
 ;; See `marginalia' for completion matching styles configuration.
 (use-package vertico
   :ensure t
