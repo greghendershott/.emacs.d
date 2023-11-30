@@ -976,12 +976,6 @@
   :defer
   :config (setq reb-re-syntax 'rx)) ;I love using rx for regexps
 
-;; (use-package smex
-;;   :ensure t
-;;   :bind (("M-x"   . smex)
-;;          ("M-X"   . smex-major-mode-commands)
-;;          ("C-x m" . smex)))
-
 (use-package solarized
   :ensure solarized-theme
   :defer t
