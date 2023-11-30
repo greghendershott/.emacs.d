@@ -901,7 +901,7 @@
   (add-to-list 'auto-mode-alist '("\\.scrbl\\'" . racket-hash-lang-mode))
   (add-to-list 'auto-mode-alist '("\\.rhm\\'" . racket-hash-lang-mode))
   (add-hook 'racket-hash-lang-module-language-hook
-            #'gh/racket-hash-lang-choose-paredit-or-electric-pairs)
+            #'gh/racket-hash-lang-on-module-language)
   (require 'racket-cmd)
   (setq racket-repl-buffer-name-function
         #'racket-repl-buffer-name-project)
@@ -930,21 +930,25 @@
                ("M-]" . racket-align)
                ("M-}" . racket-unalign))))
 
-(defun gh/racket-hash-lang-choose-paredit-or-electric-pairs (mod-lang)
-  ;;;(message "%S" (list 'gh/racket-hash-lang-choose-paredit-or-electric-pairs mod-lang))
-  (cond
-   ((member mod-lang (list "racket" "racket/base"
-                           "typed/racket" "typed/racket/base"))
-    (electric-pair-local-mode -1)
-    (paredit-mode 1))
-   (t
-    (paredit-mode -1)
-    (electric-pair-local-mode 1)
-    ;; #'electric-pair-default-inhibit tries to preserve balance but seems to
-    ;; get confused about things like quote-matches in racket-hash-lang-mode.
-    ;; For now, suggest this hack.
-    (setq-local electric-pair-inhibit-predicate
-                #'electric-pair-conservative-inhibit))))
+(defun gh/racket-hash-lang-on-module-language (mod-lang)
+  (message "%S" (list 'gh/racket-hash-lang-on-module-language mod-lang))
+  (let ((rackety
+         (member mod-lang (list "racket" "racket/base"
+                                "typed/racket" "typed/racket/base"))))
+    (paredit-mode (if rackety 1 -1))
+    ;; Note: `racket-font-lock-keywords' and `racket-font-lock-level-0' etc.
+    ;; are for use in `font-lock-defaults' which picks levels based on
+    ;; `font-lock-maximum-decoration'. Instead, here, for use directly with
+    ;; `font-lock-add-keywords' we want to use only a couple specific lists,
+    ;; and /not/ the -0 or -1 lists that do syntactic stuff that we're
+    ;; handling with tokens. We just want the keywords for imported symbols.
+    ;; Obviously if this approach turns out to be OK this should be documented
+    ;; and/or simpified for use in the hook here.
+    (if rackety
+        (font-lock-add-keywords nil (append racket-font-lock-keywords-2
+                                            racket-font-lock-keywords-3))
+      (font-lock-remove-keywords nil (append racket-font-lock-keywords-2
+                                             racket-font-lock-keywords-3)))))
 
 (use-package rainbow-delimiters
   :ensure t)
