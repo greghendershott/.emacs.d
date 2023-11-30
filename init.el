@@ -470,36 +470,33 @@
 (use-package savehist
   :init (savehist-mode))
 
-;; I want `flex' style completion with `vertico' for files, buffers, commands,
-;; and more. However for completion-at-point I want 'basic' style. [I'm very
-;; used to typing a prefix and hitting TAB, maybe typing more to narrow it
-;; down and TAB-ing again.]
+;; I want `initials' style completion with `vertico' for files, buffers,
+;; commands, and more. However for completion-at-point I want 'basic' style.
+;; [I'm very used to typing a prefix and hitting TAB, maybe typing more to
+;; narrow it down and TAB-ing again.]
 ;;
 ;; The Emacs completion machinery seems to lack any way to specify a style to
 ;; use when no category metadata is specified.
 ;;
 ;; Many (most?) CAPFs don't supply a category! Argh.
 ;;
-;; So we use `maginalia' for its ability to add category metadata in many more
-;; cases, by advising `completion-metadata-get'. See
-;; `marginalia-annotator-registry' and `marginalia-classifiers'.
-;;
-;; (At the moment I don't care about the annotations it displays. In fact so
-;; far they seem mostly noise. If it turns out I really don't want that, maybe
-;; here I could adivse `completion-metadata-get' myself, borrowing the private
-;; `marginalia' functions, without enabling `marginalia-mode' at all.)
+;; So use `maginalia' for its ability to add category metadata in many more
+;; cases (it advises `completion-metadata-get'; see also
+;; `marginalia-annotator-registry' and `marginalia-classifiers'). This is my
+;; original motivation to use marginalia at all; the annotations are so far
+;; IMHO just a nice-to-have.
 (use-package marginalia
   :ensure t
   :bind (:map minibuffer-local-map
               ("M-A" . marginalia-cycle))
   :init
   (marginalia-mode)
-  ;; Default the completion style to `flex' (with `basic' as a backup), only
-  ;; because there are many more categories where we prefer that.
-  (setq completion-styles '(flex initials basic))
-  ;; Then override the style for the `file' category, plus various programming
-  ;; styles where I want that in the minibuffer and especially for
-  ;; `completion-at-point'.
+  ;; Default the completion style to `initials' (with `basic' as a backup),
+  ;; only because there are many more categories where we prefer that.
+  (setq completion-styles '(initials basic))
+  ;; Then override the style for the `file' category, plus use `basic' style
+  ;; for various programming categories where I want that in the minibuffer
+  ;; and especially for `completion-at-point'.
   (setq ;;completion-category-defaults nil
         completion-category-overrides `((file (styles partial-completion))
                                         (symbol (styles basic))
