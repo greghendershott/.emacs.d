@@ -848,15 +848,20 @@
   :init
   (remove-hook 'project-find-functions #'project-try-vc)
   (add-hook 'project-find-functions #'gh/find-project)
-  ;; Ignore Racket bytecode dirs. Another option is to add globs to
-  ;; `grep-find-ignored-files'.
+  ;; Tell `project-ignores' to ignore Racket bytecode dirs. Another option is
+  ;; to add globs to `grep-find-ignored-files'.
   (add-to-list 'vc-directory-exclusion-list "compiled"))
 
-(defun gh/project-root (dir)
-  "Find project dominating DIR, if any."
-  (when-let ((dir (or (locate-dominating-file dir ".git")
-                      (locate-dominating-file dir ".projectile"))))
-    (file-name-directory (expand-file-name dir))))
+(defun gh/project-root (start-dir)
+  "Find project directory, if any, dominating START-DIR."
+  (locate-dominating-file
+   start-dir
+   (lambda (candidate-dir)
+     (seq-some (lambda (marker-file)
+                 (and (file-exists-p
+                       (expand-file-name marker-file candidate-dir))
+                      (file-name-directory (expand-file-name candidate-dir))))
+               '(".git" ".projectile")))))
 
 (defun gh/find-project (dir)
   "Create a transient project dominating DIR."
