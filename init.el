@@ -316,12 +316,6 @@
   (gh/add-theme-hook 'doom-nord       #'gh/nord-theme-hook)
   (gh/add-theme-hook 'doom-nord-light #'gh/nord-theme-hook))
 
-(use-package elisp-slime-nav
-  :ensure t
-  :diminish 'elisp-slime-nav-mode
-  :init (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
-          (add-hook hook #'turn-on-elisp-slime-nav-mode)))
-
 (use-package eink-theme
   :ensure t
   :defer t
@@ -357,6 +351,12 @@
       (set-face-attribute face nil
                           :foreground "SeaGreen")))
   (gh/add-theme-hook 'eink #'gh/eink-theme-hook))
+
+(use-package elisp-slime-nav
+  :ensure t
+  :diminish 'elisp-slime-nav-mode
+  :init (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+          (add-hook hook #'turn-on-elisp-slime-nav-mode)))
 
 (use-package engine-mode
   :ensure t
@@ -398,9 +398,12 @@
   :ensure t
   :defer t)
 
-;; (use-package forge
-;;   :ensure t
-;;   :after magit)
+(use-package forge
+  ;; FIXME: Having trouble with magit-status (used to work on old Emacs on
+  ;; Ubuntu 18.04) due to issues with sqlite.
+  :disabled t
+  :ensure t
+  :after magit)
 
 (use-package frame
   :bind (("C-c w F" . toggle-frame-fullscreen))
@@ -492,8 +495,8 @@
   :init
   (marginalia-mode)
   ;; Default the completion style to `initials' (with `basic' as a backup),
-  ;; only because there are many more categories where we prefer that.
-  (setq completion-styles '(initials basic))
+  ;; only because there are many more categories where i prefer that.
+  (setq completion-styles '(initials flex basic))
   ;; Then override the style for the `file' category, plus use `basic' style
   ;; for various programming categories where I want that in the minibuffer
   ;; and especially for `completion-at-point'.
@@ -774,8 +777,9 @@
           ;; FIXME: improve org-read-date getting _time_ out of selected text
           ("c" "calendar item" entry (file+headline "~/Documents/calendar.org" "Items")
            "* %? %a %(org-insert-time-stamp (org-read-date t t \"%i\"))")
+          ;; For use by `org-protocol-capture'.
           ("n" "misc note" entry (file+headline "~/Documents/greg.org" "Web Captures")
-           "* %c\n%u\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n")))
+           "* %:annotation\n%u\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n")))
   (setq org-protocol-default-template-key "n")
   (setq org-startup-indented t)
   (setq org-todo-keyword-faces
@@ -936,7 +940,6 @@
                ("M-}" . racket-unalign))))
 
 (defun gh/racket-hash-lang-on-module-language (mod-lang)
-  (message "%S" (list 'gh/racket-hash-lang-on-module-language mod-lang))
   (let ((rackety
          (member mod-lang (list "racket" "racket/base"
                                 "typed/racket" "typed/racket/base"))))
