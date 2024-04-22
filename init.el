@@ -24,9 +24,9 @@
 ;; Things to do early in startup, e.g. to avoid momentary display
 
 (add-to-list 'initial-frame-alist
-             (if macosx-p
-                 '(fullscreen . fullboth)
-               '(fullscreen . maximized)))
+             (cond (linux-p  '(width . 180)) ;let paperWM pick height
+                   (macosx-p '(fullscreen . fullboth))
+                   (t        '(fullscreen . maximized))))
 
 (setq inhibit-startup-message t)
 (when (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
@@ -59,16 +59,6 @@
   (setq w32-lwindow-modifier 'meta)
   (w32-register-hot-key [M-])
   (w32-unregister-hot-key [M-tab]))
-
-;; Open second frame to devote to mu4e and Org Agenda. Giving it a specific
-;; name lets a window manager do things assign to a specific workspace -- e.g.
-;; one workspace for Emacs programming, and another for Emacs mail/org-mode.
-(when linux-p
-  (let ((orig (selected-frame)))
-    (make-frame '((name . "Emacs Mail/Org")
-                  (fullscreen . maximized)))
-    (run-with-timer 2 nil
-                    #'select-frame-set-input-focus orig)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Theme hooks
@@ -545,6 +535,7 @@
          ("C-c g l" . magit-log-buffer-file)
          ("C-c g p" . magit-pull))
   :config
+  (unbind-key "C-<tab>" magit-section-mode-map) ;want next-tab instead
   (setq magit-completing-read-function #'magit-ido-completing-read)
   (setq magit-diff-use-overlays nil)
   (add-hook 'git-commit-setup-hook #'git-commit-turn-on-flyspell)
@@ -695,7 +686,7 @@
               :vars '((user-mail-address . "racket@greghendershott.com"))
               :match-func (lambda (msg)
                             (and msg (gh/racket-mailing-list-p msg))))))
-    (setq mu4e-context-policy 'ask)
+    (setq mu4e-context-policy 'pick-first)
     (setq mu4e-compose-context-policy 'ask)))
 
 (use-package multiple-cursors
@@ -1557,6 +1548,34 @@ Credit: <http://whattheemacsd.com/buffer-defuns.el-02.html>"
   (other-window 1)
   (quit-window))
 (bind-key "C-c w q" #'gh/quit-other-window)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Initial tabs.
+;;
+;; Do this AFTER use-package declarations for things like mu4e and org-mode.
+(when linux-p
+  ;;(toggle-frame-fullscreen)
+  (tab-bar-mode 1)
+  (tab-rename "Mail/Agenda" 1)
+  (tab-bar-new-tab-to 2)
+  (tab-rename "Other" 2)
+  (tab-bar-select-tab 1)
+  (mu4e)
+  (let ((timer nil))
+    (setq timer
+          (run-with-timer 0.1 0.1
+                          (lambda ()
+                            (when-let (mu4e-win (get-buffer-window " *mu4e-main*"))
+                              (let ((win (selected-window)))
+                                (unwind-protect
+                                    (progn
+                                      (select-window mu4e-win)
+                                      (split-window-horizontally)
+                                      (other-window 1)
+                                      (org-agenda-list)))
+                                (select-window win)
+                                (cancel-timer timer))))))))
 
 ;; Local Variables:
 ;; fill-column: 78
