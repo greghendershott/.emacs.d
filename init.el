@@ -370,6 +370,9 @@
     :keybinding "d")
   (engine-mode 1))
 
+(use-package envrc
+  :ensure t)
+
 (use-package expand-region
   :ensure t
   :bind (("M-SPC" . er/expand-region)))
