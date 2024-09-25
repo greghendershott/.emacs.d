@@ -473,6 +473,9 @@
     ("SPC" nil)
     ("RET" nil)))
 
+(use-package imenu
+  :bind (("C-c i" . imenu)))
+
 ;; See `marginalia' for completion matching styles configuration.
 (use-package vertico
   :ensure t
