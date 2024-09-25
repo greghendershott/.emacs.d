@@ -272,6 +272,11 @@
   :defer t
   :init (setq compilation-scroll-output 'next-error))
 
+(use-package context-menu-mode
+  ;; built-in
+  :defer t
+  :init (context-menu-mode 1))
+
 (use-package copyright
   ;; built-in
   :init (setq copyright-names-regexp "Greg Hendershott"
@@ -344,6 +349,13 @@
       (set-face-attribute face nil
                           :foreground "SeaGreen")))
   (gh/add-theme-hook 'eink #'gh/eink-theme-hook))
+
+(use-package eldoc-box
+  :ensure t)
+
+(use-package eldoc
+  :config
+  (global-eldoc-mode))
 
 (use-package elisp-slime-nav
   :ensure t
