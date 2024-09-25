@@ -1214,33 +1214,6 @@
     (when fullp (toggle-frame-fullscreen))))
 (bind-key "C-c w O" #'gh/move-frame-to-other-monitor)
 
-;; imenu
-(defconst gh/emacs-lisp-mode-imenu-generic-expression
-  `((nil
-     ,(rx bol (* (syntax -))
-          "(def" (or "un" "subst" "macro" "advice")
-          (+ (syntax -))
-          (group (+ (syntax word) (syntax symbol))))
-     1)
-    ("*Vars*"
-     ,(rx bol (* (syntax -))
-          "(def" (or "var" "const")
-          (+ (syntax -))
-          (group (+ (syntax word) (syntax symbol))))
-     1)
-    ("*Types*"
-     "^\\s-*\
-          (def\\(type\\|struct\\|class\\|ine-condition\\)\
-          \\s-+\\([-A-Za-z0-9+]+\\)"
-     ,(rx bol (* (syntax -))
-          "(def" (or "type" "struct" "class" "ine-condition")
-          (+ (syntax -))
-          (group (+ (syntax word) (syntax symbol))))
-     1)))
-
-(defun gh/emacs-lisp-mode-imenu-hook ()
-  (setq imenu-generic-expression gh/emacs-lisp-mode-imenu-generic-expression))
-
 ;; From http://dfan.org/blog/2009/02/19/emacs-dedicated-windows/
 ;;;###autoload
 (defun gh/toggle-current-window-dedication ()
