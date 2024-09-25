@@ -36,7 +36,7 @@
       ((boundp 'menu-bar-mode) (menu-bar-mode -1)))
 
 (cl-case window-system
-  (x (set-frame-font "IBM Plex Mono 12" nil t)))
+  ((x pgtk) (set-frame-font "IBM Plex Mono 12" nil t)))
 
 (setq text-scale-mode-step 1.1)         ;finer inc/dec than default 1.2
 
