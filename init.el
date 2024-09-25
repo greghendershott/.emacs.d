@@ -506,16 +506,17 @@
   :init
   (marginalia-mode)
   ;; Default the completion style to `initials' (with `basic' as a backup),
-  ;; only because there are many more categories where i prefer that.
+  ;; only because there are many more categories where I prefer that.
   (setq completion-styles '(initials flex basic))
   ;; Then override the style for the `file' category, plus use `basic' style
   ;; for various programming categories where I want that in the minibuffer
   ;; and especially for `completion-at-point'.
-  (setq ;;completion-category-defaults nil
-        completion-category-overrides `((file (styles partial-completion))
-                                        (symbol (styles basic))
-                                        (variable (styles basic))
-                                        (function (styles basic))))
+  (setq completion-category-overrides
+        `((file (styles partial-completion))
+          (racket-identifier (styles basic))
+          (symbol (styles basic))
+          (variable (styles basic))
+          (function (styles basic))))
   ;; Ignore case for completions.
   (setq completion-ignore-case t)
   (setq read-file-name-completion-ignore-case t)
