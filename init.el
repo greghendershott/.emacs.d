@@ -937,7 +937,7 @@
       ;; 3. Experiment using multi back ends on same host. Files under
       ;; /var/tmp/8.0 will use a back end using Racket 8.9
       (racket-add-back-end "/var/tmp/8.0"
-                           :racket-program "~/racket/8.0/bin/racket")))
+                           :racket-program "~/racket/8.6-cs/bin/racket")))
    (macosx-p
     (setq racket-program "/Applications/Racket_v8.10/bin/racket"))
    (mswindows-p
