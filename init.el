@@ -592,13 +592,15 @@
 
 (when linux-p
   (use-package mu4e
-    :load-path "/usr/share/emacs/site-lisp/elpa/mu4e-1.8.14/"
+    :load-path "/usr/share/emacs/site-lisp/elpa/mu4e/"
     :config
     (bind-key "C-c a m" #'mu4e)
     (bind-keys :map mu4e-headers-mode-map
                ("C-c C-c" . mu4e-org-store-and-capture))
     (bind-keys :map mu4e-view-mode-map
                ("C-c C-c" . mu4e-org-store-and-capture))
+    ;; I'm using C-<tab> for tab-bar-mode
+    (unbind-key "C-<tab>" mu4e-thread-mode-map)
 
     (setq mail-user-agent 'mu4e-user-agent)
 
@@ -642,14 +644,13 @@
                                         "greghendershott@hotmail.com"))
     (setq user-mail-address "mail@greghendershott.com"
           user-full-name    "Greg Hendershott")
-    (setq mu4e-compose-signature "Greg Hendershott"
-          mu4e-compose-signature-auto-include nil)
+    (setq message-signature nil)
 
     (setq mu4e-compose-dont-reply-to-self t)
 
     ;; customize the reply-quote-string
     (setq message-citation-line-format
-          "On %a %d %b %Y at %R, %f wrote:")
+          "\nOn %a %d %b %Y at %R, %f wrote:")
     ;; choose to use the formatted string
     (setq message-citation-line-function
           'message-insert-formatted-citation-line)
@@ -767,12 +768,8 @@
                            "~/README.org")
         org-default-notes-file "~/Documents.greg.org")
   (setq org-agenda-start-on-weekday 1)
+  (setq org-agenda-span 14)
   (setq org-agenda-prefix-format
-        ;; '((agenda   . " %i %-12:c%?-12t% s")
-        ;;   (timeline . "  % s")
-        ;;   (todo     . " %i %-12:c")
-        ;;   (tags     . " %i %-12:c")
-        ;;   (search . " %i %-12:c"))
         '((agenda   . "  %?-12t% s")
           (timeline . "  % s")
           (todo     . "")
@@ -1584,7 +1581,7 @@ Credit: <http://whattheemacsd.com/buffer-defuns.el-02.html>"
     (setq timer
           (run-with-timer 0.1 0.1
                           (lambda ()
-                            (when-let (mu4e-win (get-buffer-window " *mu4e-main*"))
+                            (when-let (mu4e-win (get-buffer-window "*mu4e-main*"))
                               (let ((win (selected-window)))
                                 (unwind-protect
                                     (progn
