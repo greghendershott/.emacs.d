@@ -51,8 +51,11 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file t)
 
-;; I seem to be hitting this accidentally and I never use fill-prefix.
-(global-unset-key (kbd "C-x ."))
+;; I hit this accidentally and I never use fill-prefix.
+(keymap-unset ctl-x-map "." t)
+;; I hit this accidentally when typing too fast and meaning "C-x b" for
+;; switch-to-buffer.
+(keymap-unset ctl-x-map "C-b" t)
 
 `(when mswindows-p
   (setq w32-pass-lwindow-to-system nil)
