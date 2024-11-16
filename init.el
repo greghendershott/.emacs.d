@@ -524,8 +524,9 @@
 
 (use-package corfu
   :ensure t
-  :init
-  (global-corfu-mode))
+  :config
+  (global-corfu-mode)
+  (corfu-popupinfo-mode))
 
 (use-package interaction-log
   :defer t
