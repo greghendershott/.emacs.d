@@ -19,6 +19,7 @@
         org-kill-line
         org-meta-return
         org-self-insert-command
+        paredit-backslash
         paredit-backward
         paredit-backward-down
         paredit-backward-kill-word
