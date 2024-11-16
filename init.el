@@ -197,10 +197,10 @@
 (require 'use-package)
 (require 'bind-key)
 
-(when macosx-p
-  (use-package exec-path-from-shell ;do this early
-    :ensure t
-    :init (exec-path-from-shell-initialize)))
+(use-package exec-path-from-shell ;do this early
+  :if macosx-p
+  :ensure t
+  :init (exec-path-from-shell-initialize))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -228,23 +228,23 @@
   :ensure t
   :init (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
-(when macosx-p
-  (use-package buffer-face-mode
-    ;; built-in
-    :defer t
-    :init
-    (defun gh/buffer-face-fixed ()
-      "Use a fixed font in the current buffer."
-      (interactive)
-      (setq buffer-face-mode-face '(:family "Menlo" :width semi-condensed)) ;macosx specific
-      (buffer-face-mode))
-    (defun gh/buffer-face-variable ()
-      "Use a variable font in the current buffer."
-      (interactive)
-      (setq buffer-face-mode-face '(:family "Helvetica" :height 140)) ;macosx specific
-      (buffer-face-mode))
-    (dolist (hook '(Info-mode-hook))
-      (add-hook hook #'gh/buffer-face-variable))))
+(use-package buffer-face-mode
+  :if macosx-p
+  ;; built-in
+  :defer t
+  :init
+  (defun gh/buffer-face-fixed ()
+    "Use a fixed font in the current buffer."
+    (interactive)
+    (setq buffer-face-mode-face '(:family "Menlo" :width semi-condensed)) ;macosx specific
+    (buffer-face-mode))
+  (defun gh/buffer-face-variable ()
+    "Use a variable font in the current buffer."
+    (interactive)
+    (setq buffer-face-mode-face '(:family "Helvetica" :height 140)) ;macosx specific
+    (buffer-face-mode))
+  (dolist (hook '(Info-mode-hook))
+    (add-hook hook #'gh/buffer-face-variable)))
 
 (use-package calendar
   ;; I'm using this only for history from exported Gmail calendar.
@@ -351,7 +351,10 @@
   (gh/add-theme-hook 'eink #'gh/eink-theme-hook))
 
 (use-package eldoc-box
-  :ensure t)
+  :ensure t
+  :config
+  (set-face-attribute 'eldoc-box-body nil
+                      :height 0.8))
 
 (use-package eldoc
   :config
@@ -592,123 +595,123 @@
 (use-package mmm-mode
   :ensure t)
 
-(when linux-p
-  (use-package mu4e
-    :load-path "/usr/share/emacs/site-lisp/elpa/mu4e/"
-    :config
-    (bind-key "C-c a m" #'mu4e)
-    (bind-keys :map mu4e-headers-mode-map
-               ("C-c C-c" . mu4e-org-store-and-capture))
-    (bind-keys :map mu4e-view-mode-map
-               ("C-c C-c" . mu4e-org-store-and-capture))
-    ;; I'm using C-<tab> for tab-bar-mode
-    (unbind-key "C-<tab>" mu4e-thread-mode-map)
+(use-package mu4e
+  :if linux-p
+  :load-path "/usr/share/emacs/site-lisp/elpa/mu4e/"
+  :config
+  (bind-key "C-c a m" #'mu4e)
+  (bind-keys :map mu4e-headers-mode-map
+             ("C-c C-c" . mu4e-org-store-and-capture))
+  (bind-keys :map mu4e-view-mode-map
+             ("C-c C-c" . mu4e-org-store-and-capture))
+  ;; I'm using C-<tab> for tab-bar-mode
+  (unbind-key "C-<tab>" mu4e-thread-mode-map)
 
-    (setq mail-user-agent 'mu4e-user-agent)
+  (setq mail-user-agent 'mu4e-user-agent)
 
-    (setq mu4e-maildir "/home/greg/Maildir")
+  (setq mu4e-maildir "/home/greg/Maildir")
 
-    (setq mu4e-trash-folder  "/greg/Trash")
-    (setq mu4e-drafts-folder "/greg/Drafts")
-    (setq mu4e-sent-folder   "/greg/Sent")
-    (setq mu4e-sent-messages-behavior 'sent)
+  (setq mu4e-trash-folder  "/greg/Trash")
+  (setq mu4e-drafts-folder "/greg/Drafts")
+  (setq mu4e-sent-folder   "/greg/Sent")
+  (setq mu4e-sent-messages-behavior 'sent)
 
-    (setq mu4e-attachment-dir  "~/Downloads") ;not ~/
+  (setq mu4e-attachment-dir  "~/Downloads") ;not ~/
 
-    ;; Rename files when moving -- needed with mbsync to avoid duplicate UID
-    ;; errors!
-    (setq mu4e-change-filenames-when-moving t)
+  ;; Rename files when moving -- needed with mbsync to avoid duplicate UID
+  ;; errors!
+  (setq mu4e-change-filenames-when-moving t)
 
-    (setq mu4e-maildir-shortcuts
-          '(("/greg/INBOX"  . ?i)
-            ("/greg/Drafts" . ?d)
-            ("/greg/Sent"   . ?s)
-            ("/greg/Trash"  . ?t)
-            ("/archive"     . ?a)))
+  (setq mu4e-maildir-shortcuts
+        '(("/greg/INBOX"  . ?i)
+          ("/greg/Drafts" . ?d)
+          ("/greg/Sent"   . ?s)
+          ("/greg/Trash"  . ?t)
+          ("/archive"     . ?a)))
 
-    (setq mu4e-get-mail-command "mbsync greg")
+  (setq mu4e-get-mail-command "mbsync greg")
 
     ;;; Sending
-    (require 'smtpmail)
-    (setq message-send-mail-function 'smtpmail-send-it
-          starttls-use-gnutls t
-          smtpmail-starttls-credentials '(("smtp.fastmail.com" 587 nil nil))
-          smtpmail-auth-credentials '(("smtp.fastmail.com" 587 "mail@greghendershott.com" nil))
-          smtpmail-default-smtp-server "smtp.fastmail.com"
-          smtpmail-smtp-server "smtp.fastmail.com"
-          smtpmail-smtp-service 587)
+  (require 'smtpmail)
+  (setq message-send-mail-function 'smtpmail-send-it
+        starttls-use-gnutls t
+        smtpmail-starttls-credentials '(("smtp.fastmail.com" 587 nil nil))
+        smtpmail-auth-credentials '(("smtp.fastmail.com" 587 "mail@greghendershott.com" nil))
+        smtpmail-default-smtp-server "smtp.fastmail.com"
+        smtpmail-smtp-server "smtp.fastmail.com"
+        smtpmail-smtp-service 587)
 
-    (setq mu4e-user-mail-address-list '("mail@greghendershott.com"
-                                        "git@greghendershott.com"
-                                        "racket@greghendershott.com"
-                                        "greghendershott@gmail.com"
-                                        "greghendershott@yahoo.com"
-                                        "greghendershott@hotmail.com"))
-    (setq user-mail-address "mail@greghendershott.com"
-          user-full-name    "Greg Hendershott")
-    (setq message-signature nil)
+  (setq mu4e-user-mail-address-list '("mail@greghendershott.com"
+                                      "git@greghendershott.com"
+                                      "racket@greghendershott.com"
+                                      "greghendershott@gmail.com"
+                                      "greghendershott@yahoo.com"
+                                      "greghendershott@hotmail.com"))
+  (setq user-mail-address "mail@greghendershott.com"
+        user-full-name    "Greg Hendershott")
+  (setq message-signature nil)
 
-    (setq mu4e-compose-dont-reply-to-self t)
+  (setq mu4e-compose-dont-reply-to-self t)
 
-    ;; customize the reply-quote-string
-    (setq message-citation-line-format
-          "\nOn %a %d %b %Y at %R, %f wrote:")
-    ;; choose to use the formatted string
-    (setq message-citation-line-function
-          'message-insert-formatted-citation-line)
+  ;; customize the reply-quote-string
+  (setq message-citation-line-format
+        "\nOn %a %d %b %Y at %R, %f wrote:")
+  ;; choose to use the formatted string
+  (setq message-citation-line-function
+        'message-insert-formatted-citation-line)
 
-    (add-hook 'mu4e-view-mode-hook 'visual-line-mode)
+  (add-hook 'mu4e-view-mode-hook 'visual-line-mode)
 
-    ;; https://github.com/djcb/mu/issues/2337
-    (with-eval-after-load "mm-decode"
-      (add-to-list 'mm-discouraged-alternatives "text/html")
-      (add-to-list 'mm-discouraged-alternatives "text/richtext")
-      (add-to-list 'mm-discouraged-alternatives "multipart/related"))
+  ;; https://github.com/djcb/mu/issues/2337
+  (with-eval-after-load "mm-decode"
+    (add-to-list 'mm-discouraged-alternatives "text/html")
+    (add-to-list 'mm-discouraged-alternatives "text/richtext")
+    (add-to-list 'mm-discouraged-alternatives "multipart/related"))
 
-    ;; rice
-    (setq mu4e-view-show-addresses t)
-    (setq mu4e-use-fancy-chars nil)
-    (setq mu4e-headers-fields '( (:human-date     .   12)
-                                 (:flags          .    6)
-                                 ;(:mailing-list   .   11)
-                                 (:from           .   16)
-                                 (:thread-subject .   nil)))
-    ;; TODO: Add this to make it apparent to whom the email was sent,
-    ;; e.g. info@greghendershott.com spam.
-    ;;
-    ;; (add-to-list 'mu4e-view-fields
-    ;;              '(:X-Delivered-To .
-    ;;                                (:name
-    ;;                                 "X-Delivered-To"
-    ;;                                 :function
-    ;;                                 (lambda (msg)
-    ;;                                   (or (mu4e-message-field msg :X-Delivered-To)
-    ;;                                       "")))))
+  ;; rice
+  (setq mu4e-view-show-addresses t)
+  (setq mu4e-use-fancy-chars nil)
+  (setq mu4e-headers-fields '( (:human-date     .   12)
+                               (:flags          .    6)
+                                        ;(:mailing-list   .   11)
+                               (:from           .   16)
+                               (:thread-subject .   nil)))
+  ;; TODO: Add this to make it apparent to whom the email was sent,
+  ;; e.g. info@greghendershott.com spam.
+  ;;
+  ;; (add-to-list 'mu4e-view-fields
+  ;;              '(:X-Delivered-To .
+  ;;                                (:name
+  ;;                                 "X-Delivered-To"
+  ;;                                 :function
+  ;;                                 (lambda (msg)
+  ;;                                   (or (mu4e-message-field msg :X-Delivered-To)
+  ;;                                       "")))))
 
-    ;; don't keep message buffers around
-    (setq message-kill-buffer-on-exit t)
+  ;; don't keep message buffers around
+  (setq message-kill-buffer-on-exit t)
 
-    ;; Contexts
-    (defun gh/racket-mailing-list-p (msg)
-      "Is MSG from one of the Racket lists?"
-      (and (member (mu4e-message-field msg :mailing-list)
-                   '("racket-users.googlegroups.com"
-                     "racket-dev.googlegroups.com"
-                     "racket-money.googlegroups.com"))
-           t))
-    (setq mu4e-contexts
-          `(,(make-mu4e-context
-              :name "Personal"
-              :vars '((user-mail-address . "mail@greghendershott.com"))
-              :match-func (lambda (msg)
-                            (and msg (not (gh/racket-mailing-list-p msg)))))
-            ,(make-mu4e-context
-              :name "Racket"
-              :vars '((user-mail-address . "racket@greghendershott.com"))
-              :match-func (lambda (msg)
-                            (and msg (gh/racket-mailing-list-p msg))))))
-    (setq mu4e-context-policy 'pick-first)
-    (setq mu4e-compose-context-policy 'ask)))
+  ;; Contexts
+  (defun gh/racket-mailing-list-p (msg)
+    "Is MSG from one of the Racket lists?"
+    (and (member (mu4e-message-field msg :mailing-list)
+                 '("racket-users.googlegroups.com"
+                   "racket-dev.googlegroups.com"
+                   "racket-money.googlegroups.com"))
+         t))
+  (setq mu4e-contexts
+        `(,(make-mu4e-context
+            :name "Personal"
+            :vars '((user-mail-address . "mail@greghendershott.com"))
+            :match-func (lambda (msg)
+                          (and msg (not (gh/racket-mailing-list-p msg)))))
+          ,(make-mu4e-context
+            :name "Racket"
+            :vars '((user-mail-address . "racket@greghendershott.com"))
+            :match-func (lambda (msg)
+                          (and msg (gh/racket-mailing-list-p msg))))))
+  (setq mu4e-context-policy 'pick-first)
+  (setq mu4e-compose-context-policy 'ask))
 
 (use-package multiple-cursors
   :ensure t
