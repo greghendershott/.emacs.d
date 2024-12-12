@@ -142,10 +142,6 @@
       (cond (macosx-p #'browse-url-default-browser)
             (t #'browse-url-firefox)))
 
-;; Emacs 25 enables global-eldoc-mode by default. No.
-(when (fboundp 'global-eldoc-mode)
-  (global-eldoc-mode -1))
-
 (require 'rx)
 (defun gh/set-page-delimiter ()
   (setq-local page-delimiter (rx bol (or "" ";;; "))))
@@ -349,13 +345,14 @@
 
 (use-package eldoc-box
   :ensure t
+  :diminish eldoc-box-hover-mode
+  :diminish eldoc-box-hover-at-point-mode
   :config
   (set-face-attribute 'eldoc-box-body nil
-                      :height 0.8))
-
-(use-package eldoc
-  :config
-  (global-eldoc-mode))
+                      :inherit 'tooltip
+                      :height 0.8)
+  :hook
+  ((prog-mode . eldoc-box-hover-at-point-mode)))
 
 (use-package elisp-slime-nav
   :ensure t
