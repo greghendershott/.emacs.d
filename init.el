@@ -1150,11 +1150,13 @@
   "Mode line format for VC Mode: ' on <branch-name>'.")
 (put 'gh/vc-mode-line 'risky-local-variable t)
 
-(setq display-time-load-average-threshold nil)
+;; (setq display-time-load-average-threshold nil)
+
 ;; (setq-default battery-mode-line-format " %b%p%%/%t")
 ;; (display-battery-mode 1)
-(setq display-time-format "%b %-d %-l:%M") ;see `format-time-string'
-(display-time)
+
+;; (setq display-time-format "%b %-d %-l:%M") ;see `format-time-string'
+;; (display-time)
 
 ;; multi monitor
 
