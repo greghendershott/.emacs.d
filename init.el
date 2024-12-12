@@ -363,18 +363,6 @@
   :init (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
           (add-hook hook #'turn-on-elisp-slime-nav-mode)))
 
-(use-package engine-mode
-  :ensure t
-  :config
-  (defengine my-github-issues
-    "https://github.com/issues?utf8=true&q=is:open+user:greghendershott+%s"
-    :keybinding "i"
-    :docstring "Search my GitHub open issues.")
-  (defengine duckduckgo
-    "https://duckduckgo.com/?q=%s"
-    :keybinding "d")
-  (engine-mode 1))
-
 (use-package envrc
   :ensure t)
 
