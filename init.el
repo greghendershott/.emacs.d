@@ -321,10 +321,7 @@
   (defun gh/eink-theme-hook ()
     ;; I need more contrast in active vs inactive
     (set-face-attribute 'mode-line nil
-                        :height 0.9
                         :background "grey75")
-    (set-face-attribute 'mode-line-inactive nil
-                        :height 0.9)
     ;; Um I need fringe for step debug, error position, etc.
     (set-face-attribute 'fringe nil
                         :foreground (face-attribute 'default :foreground)
