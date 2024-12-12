@@ -1120,7 +1120,7 @@
                 " " (vc-mode gh/vc-mode-line)
                 " " mode-line-position
                 " " mode-line-modes
-                " " (:propertize (:eval mode-line-misc-info) face italic)
+                ;; " " (:propertize (:eval mode-line-misc-info) face italic)
                 mode-line-end-spaces))
 
 (setq-default mode-line-buffer-identification
