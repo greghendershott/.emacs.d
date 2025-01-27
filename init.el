@@ -285,7 +285,7 @@
   (defun gh/nord-theme-hook ()
     (doom-themes-org-config) ;this is nice but...
     (org-bullets-mode 0)    ;need to toggle this off...
-    (org-bullset-mode 1)    ;and on again, afterwards
+    (org-bullets-mode 1)    ;and on again, afterwards
     (doom-themes-neotree-config)
     (setq doom-themes-neotree-file-icons t)) ;not default 'simple
   (gh/add-theme-hook 'doom-nord       #'gh/nord-theme-hook)
