@@ -1009,24 +1009,11 @@
           (add-hook hook #'which-key-mode))
   :config
   (setq which-key-idle-delay 0.4
+        which-key-idle-secondary-delay 0
         which-key-sort-order 'which-key-prefix-then-key-order
-        ;; which-key-key-replacement-alist
-        ;; '(("<\\([[:alnum:]-]+\\)>" . "\\1")
-        ;;   ("up"                    . "↑")
-        ;;   ("right"                 . "→")
-        ;;   ("down"                  . "↓")
-        ;;   ("left"                  . "←")
-        ;;   ("DEL"                   . "⌫")
-        ;;   ("deletechar"            . "⌦")
-        ;;   ("RET"                   . "⏎"))
-        which-key-description-replacement-alist
-        '(("Prefix Command" . "prefix")
-          ;; Lambdas
-          ("\\`\\?\\?\\'"   . "λ")
-          ;; Prettify hydra entry points
-          ("/body\\'"       . " |=")
-          ;; Drop my personal prefix
-          ("\\`gh/"  . "")))
+        which-key-popup-type 'side-window
+        which-key-show-docstrings nil
+        which-key-max-description-length nil)
   (which-key-add-key-based-replacements
     "C-c a" "applications"
     "C-c b" "buffers"
