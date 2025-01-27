@@ -5,38 +5,11 @@
 (defvar macosx-p (string-match "darwin" (symbol-name system-type)))
 (defvar linux-p (and (not mswindows-p) (not macosx-p)))
 
-;; `load-prefer-newer': This is nil by default -- Emacs always prefers .elc,
-;; even when .el is newer. Instead, I want to load .el when newer than .elc.
-;; This helps when e.g. I'm working on Racket Mode. It means I'll never get
-;; confused by Emacs using stale bytecode. I'm in the habit of doing a `make
-;; clean` to avoid this... but eliminating a possible confusion is always
-;; good.
-;;
-;; [Setting `load-prefer-newer' true here is of course N/A for this init.el
-;; file itself -- if it were already loaded from bytecode, it would be too
-;; late. In Emacs 27+ this could go in the new early-init.el. Anyway I never
-;; byte-compile my init file so it's moot for me.]
-(setq load-prefer-newer t)
-
 (eval-when-compile
   (require 'cl-macs))
 
-;; Things to do early in startup, e.g. to avoid momentary display
-
-(add-to-list 'initial-frame-alist
-             (cond (linux-p  '(width . 180)) ;let paperWM pick height
-                   (macosx-p '(fullscreen . fullboth))
-                   (t        '(fullscreen . maximized))))
-
-(setq inhibit-startup-message t)
-(when (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(when (boundp 'tool-bar-mode) (tool-bar-mode -1))
-(cond (macosx-p (setq ns-command-modifier 'meta
-                      ns-auto-hide-menu-bar t))
-      ((boundp 'menu-bar-mode) (menu-bar-mode -1)))
-
-(cl-case window-system
-  ((x pgtk) (set-frame-font "IBM Plex Mono 12" nil t)))
+(when linux-p
+  (set-frame-font "IBM Plex Mono 12" nil t))
 
 (setq text-scale-mode-step 1.1)         ;finer inc/dec than default 1.2
 
@@ -51,13 +24,15 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file t)
 
+;; Misc tweaks
+
 ;; I hit this accidentally and I never use fill-prefix.
 (keymap-unset ctl-x-map "." t)
 ;; I hit this accidentally when typing too fast and meaning "C-x b" for
 ;; switch-to-buffer.
 (keymap-unset ctl-x-map "C-b" t)
 
-`(when mswindows-p
+(when mswindows-p
   (setq w32-pass-lwindow-to-system nil)
   (setq w32-lwindow-modifier 'meta)
   (w32-register-hot-key [M-])
@@ -86,7 +61,13 @@
       (apply f theme-id no-confirm no-enable args)
     (unless no-enable
       (pcase (assq theme-id gh/theme-hooks)
-        (`(,_ . ,f) (funcall f))))))
+        (`(,_ . ,f) (funcall f)))
+      ;; Regardless of theme, use consistent family and size for
+      ;; mode line faces.
+      (dolist (f '(mode-line mode-line-inactive))
+        (set-face-attribute f nil
+                            :family "Noto Sans"
+                            :height 'unspecified)))))
 
 (advice-add 'load-theme
             :around
