@@ -326,14 +326,13 @@
 
 (use-package eldoc-box
   :ensure t
-  :diminish eldoc-box-hover-mode
-  :diminish eldoc-box-hover-at-point-mode
   :config
+  (setopt eldoc-box-lighter nil)
   (set-face-attribute 'eldoc-box-body nil
                       :inherit 'tooltip
                       :height 0.8)
   :hook
-  ((prog-mode . eldoc-box-hover-at-point-mode)))
+  ((prog-mode . eldoc-box-hover-mode)))
 
 (use-package elisp-slime-nav
   :ensure t
