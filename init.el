@@ -449,10 +449,9 @@
 (use-package savehist
   :init (savehist-mode))
 
-;; I want `initials' style completion with `vertico' for files, buffers,
-;; commands, and more. However for completion-at-point I want 'basic' style.
-;; [I'm very used to typing a prefix and hitting TAB, maybe typing more to
-;; narrow it down and TAB-ing again.]
+;; I want differing completion styles. For instance with `completion-at-point'
+;; I want 'basic' style. [I'm very used to typing a prefix and hitting TAB,
+;; maybe typing more to narrow it down and TAB-ing again.]
 ;;
 ;; The Emacs completion machinery seems to lack any way to specify a style to
 ;; use when no category metadata is specified.
@@ -470,14 +469,13 @@
               ("M-A" . marginalia-cycle))
   :init
   (marginalia-mode)
-  ;; Default the completion style to `initials' (with `basic' as a backup),
-  ;; only because there are many more categories where I prefer that.
-  (setq completion-styles '(initials flex basic))
+  ;; Default the completion style for most categories.
+  (setq completion-styles '(basic initials flex))
   ;; Then override the style for the `file' category, plus use `basic' style
   ;; for various programming categories where I want that in the minibuffer
   ;; and especially for `completion-at-point'.
   (setq completion-category-overrides
-        `((file (styles partial-completion))
+        `((file (styles basic partial-completion))
           (racket-identifier (styles basic))
           (symbol (styles basic))
           (variable (styles basic))
