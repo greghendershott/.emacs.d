@@ -517,6 +517,7 @@
          ("C-c g b" . magit-blame)
          ("C-c g l" . magit-log-buffer-file)
          ("C-c g p" . magit-pull))
+  :diminish 'auto-revert-mode
   :config
   (unbind-key "C-<tab>" magit-section-mode-map) ;want next-tab instead
   (setq magit-completing-read-function #'magit-ido-completing-read)
