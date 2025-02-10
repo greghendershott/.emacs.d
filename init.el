@@ -249,6 +249,14 @@
   :defer t
   :init (setq compilation-scroll-output 'next-error))
 
+(use-package consult
+  :ensure t
+  :bind (("C-c i" . consult-imenu))
+  :init
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref))
+
 (use-package context-menu-mode
   ;; built-in
   :defer t
