@@ -183,8 +183,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Packages, alphabetically.
 
-;; Use `use-package' for built-in packages, too -- :load-path instead of
-;; :ensure
+;; Use `use-package' for built-in packages, too -- just omit :ensure.
+;; And for stuff installed from source, can use :load-path.
 
 (use-package all-the-icons
   :ensure t
