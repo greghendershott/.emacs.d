@@ -15,11 +15,12 @@
   (add-to-list 'default-frame-alist '(undecorated . t)))
 
 ;; Initial frame size/state
-(add-to-list 'initial-frame-alist
-             (pcase system-type
-              ('gnu/linux  '(width . 180)) ;let paperWM pick height
-              ('darwin     '(fullscreen . fullboth))
-              ('windows-nt '(fullscreen . maximized))))
+(add-to-list
+ 'initial-frame-alist
+ (pcase system-type
+   ('gnu/linux  '(width . (text-pixels . 2800))) ;let paperWM set height
+   ('darwin     '(fullscreen . fullboth))
+   ('windows-nt '(fullscreen . maximized))))
 
 (when (boundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (when (boundp 'tool-bar-mode) (tool-bar-mode -1))

@@ -9,7 +9,7 @@
   (require 'cl-macs))
 
 (when linux-p
-  (set-frame-font "IBM Plex Mono 12" nil t))
+  (set-frame-font "IBM Plex Mono 12" nil t t))
 
 (setq text-scale-mode-step 1.1)         ;finer inc/dec than default 1.2
 
